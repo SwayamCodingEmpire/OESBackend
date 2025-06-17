@@ -1,0 +1,73 @@
+package com.cozentus.oes.serviceImpl;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.cozentus.oes.dto.QuestionBankDTO;
+import com.cozentus.oes.entities.QuestionBank;
+import com.cozentus.oes.entities.Topic;
+import com.cozentus.oes.exceptions.ResourceNotFoundException;
+import com.cozentus.oes.repositories.QuestionBankRepository;
+import com.cozentus.oes.repositories.TopicRepository;
+import com.cozentus.oes.services.QuestionBankService;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+@Service
+public class QuestionBankServiceImpl implements QuestionBankService {
+	@PersistenceContext
+	private EntityManager entityManager;
+	private final QuestionBankRepository questionBankRepository;
+	private final TopicRepository topicRepository;
+	
+	public QuestionBankServiceImpl(QuestionBankRepository questionBankRepository, TopicRepository topicRepository) {
+		this.questionBankRepository = questionBankRepository;
+		this.topicRepository = topicRepository;
+	}
+
+	@Override
+	@Transactional
+	public void addQuestion(QuestionBankDTO questionBankDTO) {
+		// TODO Auto-generated method stub
+		QuestionBank questionBank = new QuestionBank(questionBankDTO);
+		Topic topic = topicRepository.findByCode(questionBankDTO.topicCode()).orElseThrow(()-> new ResourceNotFoundException("Invalid Topics"));;
+		questionBank.setTopic(topic);
+		questionBankRepository.save(questionBank);
+	}
+
+	@Override
+	public QuestionBankDTO getQuestionById(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<QuestionBankDTO> getAllQuestions() {
+	    List<QuestionBank> questionBanks = questionBankRepository.findAllByEnabledTrue();
+	    return questionBanks.stream()
+	            .map(QuestionBankDTO::new)
+	            .toList();
+	}
+
+	@Override
+	public void deleteQuestion(String code) {
+		int noOfDeleted = questionBankRepository.softDeleteByCode(code);
+		if(noOfDeleted == 0) {
+			throw new ResourceNotFoundException("Question with code " + code + " not found");
+		}
+	}
+
+	@Override
+	@Transactional
+	public void updateQuestion(QuestionBankDTO questionBankDTO) {
+		// TODO Auto-generated method stub
+		QuestionBank questionBank = new QuestionBank(questionBankDTO);
+		Topic topic = topicRepository.findByCode(questionBankDTO.topicCode()).orElseThrow(()-> new ResourceNotFoundException("Invalid Topics"));;
+		questionBank.setTopic(topic);
+		questionBankRepository.save(questionBank);
+	}
+
+}
