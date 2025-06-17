@@ -3,6 +3,7 @@ package com.cozentus.oes.serviceImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,12 +42,14 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	@Override
 	public QuestionBankDTO getQuestionById(int id) {
 		// TODO Auto-generated method stub
-		return null;
+		return questionBankRepository.findById(id)
+				.map(QuestionBankDTO::new)
+				.orElseThrow(() -> new ResourceNotFoundException("Question with id " + id + " not found"));
 	}
 
 	@Override
-	public List<QuestionBankDTO> getAllQuestions() {
-	    List<QuestionBank> questionBanks = questionBankRepository.findAllByEnabledTrue();
+	public List<QuestionBankDTO> getAllQuestions(Pageable pageable) {
+	    List<QuestionBank> questionBanks = questionBankRepository.findAllByEnabledTrue(pageable);
 	    return questionBanks.stream()
 	            .map(QuestionBankDTO::new)
 	            .toList();

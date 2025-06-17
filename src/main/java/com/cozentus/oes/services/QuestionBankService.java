@@ -2,6 +2,8 @@ package com.cozentus.oes.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+
 import com.cozentus.oes.dto.QuestionBankDTO;
 import com.cozentus.oes.entities.QuestionBank;
 
@@ -27,7 +29,7 @@ public interface QuestionBankService {
 	 *
 	 * @return a list of all questions
 	 */
-	List<QuestionBankDTO> getAllQuestions();
+	List<QuestionBankDTO> getAllQuestions(Pageable pageable);
 
 	/**
 	 * Deletes a question by its ID.

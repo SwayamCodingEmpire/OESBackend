@@ -3,6 +3,7 @@ package com.cozentus.oes.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,7 +24,7 @@ public interface QuestionBankRepository extends JpaRepository<QuestionBank, Inte
 	@Query("UPDATE QUESTION_BANK q SET q.enabled = false WHERE q.code = :code")
 	int softDeleteByCode(String code);
 	
-	List<QuestionBank> findAllByEnabledTrue();
+	List<QuestionBank> findAllByEnabledTrue(Pageable pageable);
 
 	Optional<QuestionBank> findByCode(@NotBlank(message = "Code is required") @Size(max = 50) String code);
 
