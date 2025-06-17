@@ -29,7 +29,9 @@ public interface QuestionBankService {
 	 *
 	 * @return a list of all questions
 	 */
-	List<QuestionBankDTO> getAllQuestions(Pageable pageable);
+	List<QuestionBankDTO> getAllQuestionsPageable(Pageable pageable);
+	
+	List<QuestionBankDTO> getAllQuestions();
 
 	/**
 	 * Deletes a question by its ID.

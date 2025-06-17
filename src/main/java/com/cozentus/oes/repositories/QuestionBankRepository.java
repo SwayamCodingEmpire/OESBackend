@@ -25,6 +25,8 @@ public interface QuestionBankRepository extends JpaRepository<QuestionBank, Inte
 	int softDeleteByCode(String code);
 	
 	List<QuestionBank> findAllByEnabledTrue(Pageable pageable);
+	
+	List<QuestionBank> findAllByEnabledTrue();
 
 	Optional<QuestionBank> findByCode(@NotBlank(message = "Code is required") @Size(max = 50) String code);
 

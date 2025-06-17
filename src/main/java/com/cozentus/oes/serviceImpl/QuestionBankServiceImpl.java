@@ -48,7 +48,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	}
 
 	@Override
-	public List<QuestionBankDTO> getAllQuestions(Pageable pageable) {
+	public List<QuestionBankDTO> getAllQuestionsPageable(Pageable pageable) {
 	    List<QuestionBank> questionBanks = questionBankRepository.findAllByEnabledTrue(pageable);
 	    return questionBanks.stream()
 	            .map(QuestionBankDTO::new)
@@ -72,6 +72,15 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 		Topic topic = topicRepository.findByCode(questionBankDTO.topicCode()).orElseThrow(()-> new ResourceNotFoundException("Invalid Topics"));;
 		existingQuestionBank.setTopic(topic);
 		questionBankRepository.save(existingQuestionBank);
+	}
+
+	@Override
+	public List<QuestionBankDTO> getAllQuestions() {
+		// TODO Auto-generated method stub
+	    List<QuestionBank> questionBanks = questionBankRepository.findAllByEnabledTrue();
+	    return questionBanks.stream()
+	            .map(QuestionBankDTO::new)
+	            .toList();
 	}
 
 }
