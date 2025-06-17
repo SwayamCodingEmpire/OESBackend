@@ -115,6 +115,22 @@ public class QuestionBank {
     	this.marks = questionBankDTO.marks();
     	
     }
+
+
+    
+	public void updateQuestionFromDTO(QuestionBankDTO questionBankDTO) {
+    	this.code = questionBankDTO.code();
+    	this.question = questionBankDTO.question();
+    	this.optionA = questionBankDTO.options().get(0);
+    	this.optionB = questionBankDTO.options().get(1);
+    	this.optionC = questionBankDTO.options().get(2);
+    	this.optionD = questionBankDTO.options().get(3);
+    	this.correctOption = questionBankDTO.correctOption().charAt(0); // Assuming single character for correct option
+    	this.comments = questionBankDTO.comments()!=null ? questionBankDTO.comments() : "NA";
+    	this.enabled = true;
+    	this.difficulty = questionBankDTO.difficulty();
+    	this.marks = questionBankDTO.marks();
+	}
 		// Default constructor for JPA
     
     

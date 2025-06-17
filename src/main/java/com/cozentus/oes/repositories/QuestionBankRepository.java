@@ -1,6 +1,7 @@
 package com.cozentus.oes.repositories;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -8,9 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cozentus.oes.entities.QuestionBank;
+import com.cozentus.oes.entities.Topic;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public interface QuestionBankRepository extends JpaRepository<QuestionBank, Integer> {
 	int deleteByCode(String code);
+	
 	
 	@Modifying
 	@Transactional
@@ -18,5 +24,7 @@ public interface QuestionBankRepository extends JpaRepository<QuestionBank, Inte
 	int softDeleteByCode(String code);
 	
 	List<QuestionBank> findAllByEnabledTrue();
+
+	Optional<QuestionBank> findByCode(@NotBlank(message = "Code is required") @Size(max = 50) String code);
 
 }

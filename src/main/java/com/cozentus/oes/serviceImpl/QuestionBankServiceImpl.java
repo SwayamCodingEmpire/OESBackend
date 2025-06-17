@@ -64,10 +64,11 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	@Transactional
 	public void updateQuestion(QuestionBankDTO questionBankDTO) {
 		// TODO Auto-generated method stub
-		QuestionBank questionBank = new QuestionBank(questionBankDTO);
+		QuestionBank existingQuestionBank = questionBankRepository.findByCode(questionBankDTO.code()).orElseThrow(() -> new ResourceNotFoundException("Question with code " + questionBankDTO.code() + " not found"));
+		existingQuestionBank.updateQuestionFromDTO(questionBankDTO);
 		Topic topic = topicRepository.findByCode(questionBankDTO.topicCode()).orElseThrow(()-> new ResourceNotFoundException("Invalid Topics"));;
-		questionBank.setTopic(topic);
-		questionBankRepository.save(questionBank);
+		existingQuestionBank.setTopic(topic);
+		questionBankRepository.save(existingQuestionBank);
 	}
 
 }
