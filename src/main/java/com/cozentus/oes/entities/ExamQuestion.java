@@ -1,61 +1,45 @@
 package com.cozentus.oes.entities;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "EXAM")
-@Table(
-    name = "exam",
-    indexes = {
-        @Index(name = "idx_exam_code", columnList = "code", unique = true)
-    }
-)
+@Entity(name = "EXAM_QUESTIONS")
+@Table(name = "exam_questions")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Exam {
+public class ExamQuestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 50, nullable = false, unique = true)
-    private String code;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "exam_id", nullable = false)
+    private Exam exam;
 
-    @Column(length = 100, nullable = false)
-    private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
+    private QuestionBank question;
 
-    @Column(name = "exam_date", nullable = false)
-    private LocalDate examDate;
-
-    @Column(name = "exam_time", nullable = false)
-    private LocalTime examTime;
-
-    @Column(name = "total_marks", nullable = false)
-    private Integer totalMarks;
-
-    /** Duration in minutes (or whatever unit you chose in the DB) */
-    @Column(nullable = false)
-    private Integer duration;
-
-    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Column(columnDefinition = "boolean default true")
     private Boolean enabled = Boolean.TRUE;
 
     @CreationTimestamp
@@ -72,3 +56,4 @@ public class Exam {
     @Column(name = "updated_by", length = 50)
     private String updatedBy;
 }
+

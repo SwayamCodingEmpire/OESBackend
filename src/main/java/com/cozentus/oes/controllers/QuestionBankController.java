@@ -75,4 +75,13 @@ public class QuestionBankController {
 		return ResponseEntity.ok("Question udpated successfully");
 	}
 	
+	@PostMapping("/bulk-upload")
+	public ResponseEntity<String> bulkUploadQuestions(@RequestBody List<QuestionBankDTO> questionBankDTOs) {
+		if (questionBankDTOs.isEmpty()) {
+			return ResponseEntity.badRequest().body("No questions provided for bulk upload");
+		}
+		
+		return ResponseEntity.ok("Bulk upload successful");
+	}
+	
 }
