@@ -9,4 +9,6 @@ public interface ExamRepository extends JpaRepository<Exam, Integer> {
 	Exam findByCode(String code);
 	
 	
+	boolean existsByCode(String code);
+
 }

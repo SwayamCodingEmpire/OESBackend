@@ -34,7 +34,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	public void addQuestion(QuestionBankDTO questionBankDTO) {
 		// TODO Auto-generated method stub
 		QuestionBank questionBank = new QuestionBank(questionBankDTO);
-		Topic topic = topicRepository.findByCode(questionBankDTO.topicCode()).orElseThrow(()-> new ResourceNotFoundException("Invalid Topics"));;
+		Topic topic = topicRepository.findByCode(questionBankDTO.topicCode()).orElseThrow(()-> new ResourceNotFoundException("Invalid Topics"));
 		questionBank.setTopic(topic);
 		questionBankRepository.save(questionBank);
 	}
