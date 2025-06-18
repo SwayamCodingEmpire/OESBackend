@@ -3,6 +3,7 @@ package com.cozentus.oes.controllers;
 import java.net.URI;
 import java.util.List;
 
+import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/v1/topic")
 public class TopicController {
+	private final Logger logger = org.slf4j.LoggerFactory.getLogger(TopicController.class);
 	private final TopicService topicService;
 
 	public TopicController(TopicService topicService) {
@@ -46,7 +48,7 @@ public class TopicController {
 		return ResponseEntity.ok(topicService.getTopicByCode(code));
 	}
 
-	@PutMapping("/code")
+	@PutMapping("/{code}")
 	public ResponseEntity<String> update(@RequestBody @Valid CodeAndNameDTO topicDTO, @PathVariable String code) {
 		topicService.updateTopic(topicDTO, code);
 		return ResponseEntity.ok("Topic updated successfully");
@@ -55,6 +57,7 @@ public class TopicController {
 
 	@DeleteMapping("/{code}")
 	public ResponseEntity<Void> deleteTopic(@PathVariable String code) {
+		logger.info(code);
 		topicService.deleteTopic(code);
 		return ResponseEntity.noContent().build();
 	}

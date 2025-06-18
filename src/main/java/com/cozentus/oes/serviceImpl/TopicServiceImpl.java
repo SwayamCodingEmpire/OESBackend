@@ -1,6 +1,7 @@
 package com.cozentus.oes.serviceImpl;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cozentus.oes.dto.CodeAndNameDTO;
@@ -9,6 +10,8 @@ import com.cozentus.oes.repositories.TopicRepository;
 import com.cozentus.oes.services.TopicService;
 
 import jakarta.validation.Valid;
+
+@Service
 public class TopicServiceImpl implements TopicService {
 	private final TopicRepository topicRepository;
 	
@@ -66,6 +69,6 @@ public class TopicServiceImpl implements TopicService {
 				.orElseThrow(() -> new IllegalArgumentException("Topic with code " + code + " not found"));
 	}
 
-	// Additional methods can be implemented here as needed
+
 
 }

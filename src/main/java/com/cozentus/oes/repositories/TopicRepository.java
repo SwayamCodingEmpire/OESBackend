@@ -15,6 +15,7 @@ import com.cozentus.oes.entities.Topic;
 public interface TopicRepository extends JpaRepository<Topic, Integer> {
 	// Additional query methods can be defined here if needed
 	Optional<Topic> findByCode(String code);
+	boolean existsByCode(String code);
 	
 	List<CodeAndNameDTO> findAllByEnabledTrueOrderByNameAsc();
 	
