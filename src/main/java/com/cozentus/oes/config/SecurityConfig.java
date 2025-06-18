@@ -10,7 +10,8 @@ import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 public class SecurityConfig {
-    @Bean
+	
+	@Bean
     public CorsFilter corsFilter() {
         CorsConfiguration configuration = new CorsConfiguration();
 
