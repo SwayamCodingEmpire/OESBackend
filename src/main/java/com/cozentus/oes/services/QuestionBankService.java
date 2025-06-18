@@ -40,7 +40,7 @@ public interface QuestionBankService {
 	 */
 	void deleteQuestion(String code);
 	
-	void updateQuestion(QuestionBankDTO questionBankDTO);
+	void updateQuestion(QuestionBankDTO questionBankDTO, String code);
 	
 	
 }

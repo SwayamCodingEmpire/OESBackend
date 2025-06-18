@@ -58,9 +58,9 @@ public class QuestionBankController {
 		// return ResponseEntity.ok("Question deleted successfully");
 	}
 	
-	@PutMapping
-	public ResponseEntity<String> updateQuestion(@RequestBody @Valid QuestionBankDTO questionBankDTO) {
-		questionBankService.updateQuestion(questionBankDTO);
+	@PutMapping("/{code}")
+	public ResponseEntity<String> updateQuestion(@RequestBody @Valid QuestionBankDTO questionBankDTO, @PathVariable String code) {
+		questionBankService.updateQuestion(questionBankDTO, code);
 		return ResponseEntity.ok("Question udpated successfully");
 	}
 	
