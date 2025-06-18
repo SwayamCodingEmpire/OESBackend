@@ -1,14 +1,12 @@
 package com.cozentus.oes.repositories;
 
+import com.cozentus.oes.entities.Exam;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.cozentus.oes.entities.Exam;
+import java.util.Optional;
 
 public interface ExamRepository extends JpaRepository<Exam, Integer> {
-	// Additional query methods can be defined here if needed
-	Exam findByCode(String code);
-	
-	
-	boolean existsByCode(String code);
-
+    Optional<Exam> findByCode(String code);
+    void deleteByCode(String code);
 }
+

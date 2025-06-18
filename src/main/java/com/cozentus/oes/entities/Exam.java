@@ -64,9 +64,9 @@ public class Exam {
 
     @Column(name = "created_by", length = 50, updatable = false)
     private String createdBy;
-
+    
     @UpdateTimestamp
-    @Column(name = "updated_at")
+    @Column(name = "updated_at")	
     private LocalDateTime updatedAt;
 
     @Column(name = "updated_by", length = 50)
