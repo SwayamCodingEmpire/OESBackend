@@ -1,5 +1,6 @@
 package com.cozentus.oes.controllers;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.cozentus.oes.dto.QuestionBankDTO;
 import com.cozentus.oes.services.QuestionBankService;
@@ -33,7 +35,17 @@ public class QuestionBankController {
 	@PostMapping
 	public ResponseEntity<String> addQuestion(@RequestBody @Valid QuestionBankDTO questionBankDTO) {
 		questionBankService.addQuestion(questionBankDTO);
-		return ResponseEntity.ok("Question added successfully");
+		 URI location = ServletUriComponentsBuilder
+			        .fromCurrentRequest()
+			        .path("/{code}")
+			        .buildAndExpand(questionBankDTO.code())
+			        .toUri();
+		 return ResponseEntity.created(location).body("Question added successfully");
+	}
+	
+	@GetMapping("/{code}")
+	public ResponseEntity<QuestionBankDTO> getQuestionById(@PathVariable String code) {
+		return ResponseEntity.ok(questionBankService.getQuestionById(code));
 	}
 	
 	@GetMapping("/pageable")
@@ -52,10 +64,9 @@ public class QuestionBankController {
 	
 	
 	@DeleteMapping("/{code}")
-	public void deleteQuestion(@PathVariable String code) {
-		questionBankService.deleteQuestion(code);
-		// Placeholder for actual implementation
-		// return ResponseEntity.ok("Question deleted successfully");
+	public ResponseEntity<Void> deleteQuestion(@PathVariable String code) {
+	    questionBankService.deleteQuestion(code);
+	    return ResponseEntity.noContent().build();
 	}
 	
 	@PutMapping("/{code}")

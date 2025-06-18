@@ -40,11 +40,11 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	}
 
 	@Override
-	public QuestionBankDTO getQuestionById(int id) {
+	public QuestionBankDTO getQuestionById(String code) {
 		// TODO Auto-generated method stub
-		return questionBankRepository.findById(id)
+		return questionBankRepository.findByCode(code)
 				.map(QuestionBankDTO::new)
-				.orElseThrow(() -> new ResourceNotFoundException("Question with id " + id + " not found"));
+				.orElseThrow(() -> new ResourceNotFoundException("Question with id " + code + " not found"));
 	}
 
 	@Override
@@ -66,7 +66,6 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	@Override
 	@Transactional
 	public void updateQuestion(QuestionBankDTO questionBankDTO, String code) {
-		// TODO Auto-generated method stub
 		QuestionBank existingQuestionBank = questionBankRepository.findByCode(code).orElseThrow(() -> new ResourceNotFoundException("Question with code " + questionBankDTO.code() + " not found"));
 		existingQuestionBank.updateQuestionFromDTO(questionBankDTO);
 		Topic topic = topicRepository.findByCode(questionBankDTO.topicCode()).orElseThrow(()-> new ResourceNotFoundException("Invalid Topics"));;
@@ -81,6 +80,20 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	    return questionBanks.stream()
 	            .map(QuestionBankDTO::new)
 	            .toList();
+	}
+	
+	public void bulkInsertQuestions(List<QuestionBankDTO> questionBankDTOs) {
+		List<QuestionBank> questionBanks = questionBankDTOs.stream()
+				.map(QuestionBank::new)
+				.collect(Collectors.toList());
+		
+		for (QuestionBank questionBank : questionBanks) {
+			Topic topic = topicRepository.findByCode(questionBank.getTopic().getCode())
+					.orElseThrow(() -> new ResourceNotFoundException("Invalid Topic: " + questionBank.getTopic().getCode()));
+			questionBank.setTopic(topic);
+		}
+		
+		questionBankRepository.saveAll(questionBanks);
 	}
 
 }

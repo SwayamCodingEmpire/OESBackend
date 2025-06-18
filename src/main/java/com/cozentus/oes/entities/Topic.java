@@ -6,6 +6,8 @@ import java.util.List;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.cozentus.oes.dto.CodeAndNameDTO;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,4 +59,14 @@ public class Topic {
     // Optional: if you want bidirectional mapping with questions
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
     private List<QuestionBank> questions;
+    
+    public Topic(CodeAndNameDTO codeAndNameDTO) {
+		this.code = codeAndNameDTO.code();
+		this.name = codeAndNameDTO.name();
+	}
+    
+    public void updateTopic(CodeAndNameDTO codeAndNameDTO) {
+		this.code = codeAndNameDTO.code();
+		this.name = codeAndNameDTO.name();
+    }
 }

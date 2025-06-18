@@ -22,7 +22,7 @@ public interface QuestionBankService {
 	 * @param id the ID of the question
 	 * @return the question with the specified ID, or null if not found
 	 */
-	QuestionBankDTO getQuestionById(int id);
+	QuestionBankDTO getQuestionById(String code);
 
 	/**
 	 * Retrieves all questions in the question bank.
