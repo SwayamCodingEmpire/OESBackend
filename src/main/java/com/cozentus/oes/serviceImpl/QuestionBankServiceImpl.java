@@ -82,17 +82,22 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	            .toList();
 	}
 	
+	@Override
+	@Transactional
 	public void bulkInsertQuestions(List<QuestionBankDTO> questionBankDTOs, String topicCode) {
-		List<QuestionBank> questionBanks = questionBankDTOs.stream()
-				.map(QuestionBank::new)
-				.collect(Collectors.toList());
-		
+	    Topic topic = topicRepository.findByCode(topicCode)
+	            .orElseThrow(() -> new ResourceNotFoundException("Invalid Topic: " + topicCode));
 
-			Topic topic = topicRepository.findByCode(topicCode)
-					.orElseThrow(() -> new ResourceNotFoundException("Invalid Topic: " + topicCode));
+	    List<QuestionBank> questionBanks = questionBankDTOs.stream()
+	        .map(questionBankDTO -> {
+	            QuestionBank qb = new QuestionBank(questionBankDTO);
+	            qb.setTopic(topic); // associate topic
+	            return qb;
+	        })
+	        .collect(Collectors.toList());
 
-		
-		questionBankRepository.saveAll(questionBanks);
+	    questionBankRepository.saveAll(questionBanks);
 	}
+
 
 }

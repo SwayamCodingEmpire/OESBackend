@@ -42,5 +42,7 @@ public interface QuestionBankService {
 	
 	void updateQuestion(QuestionBankDTO questionBankDTO, String code);
 	
+	void bulkInsertQuestions(List<QuestionBankDTO> questionBankDTOs, String topicCode);
+	
 	
 }
