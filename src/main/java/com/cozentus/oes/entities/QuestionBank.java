@@ -80,6 +80,8 @@ public class QuestionBank {
     private Difficulty difficulty;
     
     private Integer marks;
+    
+    private Integer duration; // Duration in minutes
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

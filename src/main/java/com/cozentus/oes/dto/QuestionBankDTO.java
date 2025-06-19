@@ -29,17 +29,17 @@ public record QuestionBankDTO(
 	    
 	    String comments,
 
-	    @NotNull(message = "Topic ID is required")
+
 	    String topicCode,
 	    
-	    @NotNull(message = "Topic ID is required")
 	    String topicName,
 
 	    Boolean enabled,
 
 	    @NotNull(message = "Difficulty is required")
 	    Difficulty difficulty,
-	    Integer marks
+	    Integer marks,
+	    Integer duration
 	) {
 	
 	public QuestionBankDTO(QuestionBank questionBank) {
@@ -53,7 +53,8 @@ public record QuestionBankDTO(
 			questionBank.getTopic().getName(),
 			questionBank.getEnabled(),
 			questionBank.getDifficulty(),
-			questionBank.getMarks()
+			questionBank.getMarks(),
+			questionBank.getDuration()
 		);
 	}
 	

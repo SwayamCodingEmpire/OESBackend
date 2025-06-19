@@ -14,4 +14,6 @@ public interface ExamStudentRepository extends JpaRepository<ExamStudent, Intege
 	Optional<ExamStudent> findByExamAndStudent(Exam exam, UserInfo student);
 	
 	List<ExamStudent> findByExam(Exam exam);
+	
+	void deleteByExamIdAndStudentId(Integer examId, Integer studentId);
 }

@@ -74,10 +74,10 @@ public class ExamDataController {
     
     @PostMapping("/{code}/students")
     public ResponseEntity<String> addStudentToExam(
-            @PathVariable String examCode,
+            @PathVariable String code,
             @RequestBody CodesDTO studentCodesDTO) {
 
-    	examDataService.addStudentsToExam(examCode, studentCodesDTO);
+    	examDataService.addStudentsToExam(code, studentCodesDTO);
 		return ResponseEntity.ok("Section added to exam.");
 	}
     
@@ -97,6 +97,14 @@ public class ExamDataController {
 
 		examDataService.addInstantExam(examCode, questionBankDTOs);
 		return ResponseEntity.ok("Instant exam created successfully.");
+	}
+    
+    @DeleteMapping("/{examCode}/students/{studentCode}")
+    public ResponseEntity<String> deleteStudentFromExam(
+			@PathVariable String examCode, @PathVariable String studentCode) {
+
+		examDataService.deleteStudentFromExam(examCode, studentCode);
+		return ResponseEntity.noContent().build();
 	}
 
 }

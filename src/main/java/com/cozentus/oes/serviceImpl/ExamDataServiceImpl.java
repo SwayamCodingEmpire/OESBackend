@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cozentus.oes.dto.CodesDTO;
+import com.cozentus.oes.dto.ExamSectionDTO;
 import com.cozentus.oes.dto.QuestionBankDTO;
 import com.cozentus.oes.dto.UserInfoDTO;
 import com.cozentus.oes.entities.Exam;
@@ -21,6 +22,7 @@ import com.cozentus.oes.repositories.ExamStudentRepository;
 import com.cozentus.oes.repositories.QuestionBankRepository;
 import com.cozentus.oes.repositories.UserInfoRepository;
 import com.cozentus.oes.services.ExamDataService;
+import com.cozentus.oes.services.ExamService;
 import com.cozentus.oes.services.QuestionBankService;
 
 @Service
@@ -43,6 +45,9 @@ public class ExamDataServiceImpl implements ExamDataService {
     
     @Autowired
     private UserInfoRepository userInfoRepository;
+    
+    @Autowired
+    private ExamService examService;
 
     @Transactional
     @Override
@@ -90,11 +95,33 @@ public class ExamDataServiceImpl implements ExamDataService {
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
     public void addInstantExam(String examCode, List<QuestionBankDTO> questionBankDTOs) {
-    	questionBankService.bulkInsertQuestions(questionBankDTOs, "INS1");
-    	List<String> codes = questionBankDTOs.stream().map(QuestionBankDTO::code).collect(Collectors.toList());
-    	addQuestionsToExam(examCode,new CodesDTO(codes));
-	
+        // Insert questions under topic "INS1"
+        questionBankService.bulkInsertQuestions(questionBankDTOs, "INS1");
+
+        // Extract question codes
+        List<String> codes = questionBankDTOs.stream()
+            .map(QuestionBankDTO::code)
+            .collect(Collectors.toList());
+
+        // Assign questions to exam
+        addQuestionsToExam(examCode, new CodesDTO(codes));
+
+        // Sum marks and duration
+        int totalMarks = questionBankDTOs.stream()
+            .mapToInt(QuestionBankDTO::marks)
+            .sum();
+
+        int totalDuration = questionBankDTOs.stream()
+            .mapToInt(QuestionBankDTO::duration)
+            .sum();
+
+        // Create ExamSectionDTO with topicCode "INS1"
+        ExamSectionDTO sectionDTO = new ExamSectionDTO("INS1", totalDuration, totalMarks);
+
+        // Add section to the exam
+        examService.addExamSection(List.of(sectionDTO), examCode);
     }
+
     
     @Transactional
     @Override
@@ -129,6 +156,18 @@ public class ExamDataServiceImpl implements ExamDataService {
         	    .collect(Collectors.toList());
 
     }
+
+	@Override
+	public void deleteStudentFromExam(String examCode, String studentCode) {
+		examStudentRepository.deleteByExamIdAndStudentId(
+				examRepository.findByCode(examCode)
+				.orElseThrow(() -> new RuntimeException("Exam not found with code: " + examCode))
+				.getId(), 
+				userInfoRepository.findByCode(studentCode)
+				.orElseThrow(() -> new RuntimeException("Exam not found with code: " + examCode))
+				.getId());
+		
+	}
     
     
 }
