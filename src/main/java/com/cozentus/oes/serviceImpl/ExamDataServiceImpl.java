@@ -88,6 +88,7 @@ public class ExamDataServiceImpl implements ExamDataService {
     
     
     @Transactional(propagation = Propagation.REQUIRED)
+    @Override
     public void addInstantExam(String examCode, List<QuestionBankDTO> questionBankDTOs) {
     	questionBankService.bulkInsertQuestions(questionBankDTOs, "INS1");
     	List<String> codes = questionBankDTOs.stream().map(QuestionBankDTO::code).collect(Collectors.toList());

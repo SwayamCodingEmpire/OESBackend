@@ -17,4 +17,6 @@ public interface ExamDataService {
     void addStudentsToExam(String examCode, CodesDTO requestDTO);
     
     List<UserInfoDTO> getAllStudentsOfExam(String examCode);
+    
+    void addInstantExam(String examCode, List<QuestionBankDTO> questionBankDTOs);
 }

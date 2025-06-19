@@ -88,4 +88,15 @@ public class ExamDataController {
 		List<UserInfoDTO> students = examDataService.getAllStudentsOfExam(examCode);
 		return ResponseEntity.ok(students);
 	}
+    
+    
+    @PostMapping("/{examCode}/instant-exam")
+    public ResponseEntity<String> addInstantExam(
+			@PathVariable String examCode,
+			@RequestBody List<QuestionBankDTO> questionBankDTOs) {
+
+		examDataService.addInstantExam(examCode, questionBankDTOs);
+		return ResponseEntity.ok("Instant exam created successfully.");
+	}
+
 }
