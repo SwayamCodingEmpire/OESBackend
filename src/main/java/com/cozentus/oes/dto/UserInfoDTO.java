@@ -1,6 +1,12 @@
 package com.cozentus.oes.dto;
 
-import lombok.*;
+import com.cozentus.oes.entities.UserInfo;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -12,4 +18,13 @@ public class UserInfoDTO {
     private String name;
     private String email;
     private String phoneNo;
+    
+    public UserInfoDTO(UserInfo userInfo) {
+		this.code = userInfo.getCode();
+		this.name = userInfo.getName();
+		this.email = userInfo.getEmail();
+		this.phoneNo = userInfo.getPhoneNo();
+	}
+
+
 }

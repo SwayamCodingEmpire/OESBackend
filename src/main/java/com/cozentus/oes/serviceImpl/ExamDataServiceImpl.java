@@ -7,19 +7,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cozentus.oes.dto.ExamQuestionRequestDTO;
+import com.cozentus.oes.dto.CodesDTO;
 import com.cozentus.oes.dto.QuestionBankDTO;
+import com.cozentus.oes.dto.UserInfoDTO;
 import com.cozentus.oes.entities.Exam;
 import com.cozentus.oes.entities.ExamQuestion;
+import com.cozentus.oes.entities.ExamStudent;
 import com.cozentus.oes.entities.QuestionBank;
+import com.cozentus.oes.entities.UserInfo;
 import com.cozentus.oes.repositories.ExamQuestionRepository;
 import com.cozentus.oes.repositories.ExamRepository;
+import com.cozentus.oes.repositories.ExamStudentRepository;
 import com.cozentus.oes.repositories.QuestionBankRepository;
-import com.cozentus.oes.services.ExamQuestionService;
+import com.cozentus.oes.repositories.UserInfoRepository;
+import com.cozentus.oes.services.ExamDataService;
 import com.cozentus.oes.services.QuestionBankService;
 
 @Service
-public class ExamQuestionServiceImpl implements ExamQuestionService {
+public class ExamDataServiceImpl implements ExamDataService {
 
     @Autowired
     private ExamRepository examRepository;
@@ -32,14 +37,20 @@ public class ExamQuestionServiceImpl implements ExamQuestionService {
     
     @Autowired
     private QuestionBankService questionBankService;
+    
+    @Autowired
+    private ExamStudentRepository examStudentRepository;
+    
+    @Autowired
+    private UserInfoRepository userInfoRepository;
 
     @Transactional
     @Override
-    public void addQuestionsToExam(String examCode, ExamQuestionRequestDTO requestDTO) {
+    public void addQuestionsToExam(String examCode, CodesDTO requestDTO) {
         Exam exam = examRepository.findByCode(examCode)
                 .orElseThrow(() -> new RuntimeException("Exam not found with code: " + examCode));
 
-        for (String questionCode : requestDTO.getQuestionCodes()) {
+        for (String questionCode : requestDTO.codes()) {
             QuestionBank question = questionBankRepository.findByCode(questionCode)
                     .orElseThrow(() -> new RuntimeException("Question not found with code: " + questionCode));
 
@@ -80,8 +91,42 @@ public class ExamQuestionServiceImpl implements ExamQuestionService {
     public void addInstantExam(String examCode, List<QuestionBankDTO> questionBankDTOs) {
     	questionBankService.bulkInsertQuestions(questionBankDTOs, "INS1");
     	List<String> codes = questionBankDTOs.stream().map(QuestionBankDTO::code).collect(Collectors.toList());
-    	addQuestionsToExam(examCode,new ExamQuestionRequestDTO(codes));
+    	addQuestionsToExam(examCode,new CodesDTO(codes));
 	
+    }
+    
+    @Transactional
+    @Override
+    public void addStudentsToExam(String examCode, CodesDTO requestDTO) {
+        Exam exam = examRepository.findByCode(examCode)
+                .orElseThrow(() -> new RuntimeException("Exam not found with code: " + examCode));
+
+        for (String studentCode : requestDTO.codes()) {
+            UserInfo student = userInfoRepository.findByCode(studentCode)
+                    .orElseThrow(() -> new RuntimeException("Question not found with code: " + studentCode));
+
+            boolean exists = examStudentRepository.findByExamAndStudent(exam, student).isPresent();
+            if (!exists) {
+                ExamStudent examQuestion = ExamStudent.builder()
+                        .exam(exam)
+                        .student(student)
+                        .enabled(true)
+                        .build();
+                examStudentRepository.save(examQuestion);
+            }
+        }
+    }
+    
+    @Override
+    @Transactional
+    public List<UserInfoDTO> getAllStudentsOfExam(String examCode) {
+        Exam exam = examRepository.findByCode(examCode)
+                .orElseThrow(() -> new RuntimeException("Exam not found with code: " + examCode));
+
+        return examStudentRepository.findByExam(exam).stream()
+        	    .map(examStudent -> new UserInfoDTO(examStudent.getStudent()))
+        	    .collect(Collectors.toList());
+
     }
     
     

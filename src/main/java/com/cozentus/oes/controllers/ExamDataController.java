@@ -12,24 +12,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cozentus.oes.dto.ExamQuestionRequestDTO;
+import com.cozentus.oes.dto.CodesDTO;
 import com.cozentus.oes.dto.ExamSectionDTO;
 import com.cozentus.oes.dto.QuestionBankDTO;
-import com.cozentus.oes.services.ExamQuestionService;
+import com.cozentus.oes.dto.UserInfoDTO;
+import com.cozentus.oes.services.ExamDataService;
 import com.cozentus.oes.services.ExamService;
 import com.cozentus.oes.util.EmailService;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/exam")
-public class ExamQuestionController {
+public class ExamDataController {
 
     private final EmailService emailService;
 
     @Autowired
-    private ExamQuestionService examQuestionService;
+    private ExamDataService examDataService;
     
-    ExamQuestionController(EmailService emailService) {
+    ExamDataController(EmailService emailService) {
         this.emailService = emailService;
     }
 
@@ -39,9 +40,9 @@ public class ExamQuestionController {
     @PostMapping("/{examCode}/question")
     public ResponseEntity<String> addQuestionsToExam(
             @PathVariable String examCode,
-            @Valid @RequestBody ExamQuestionRequestDTO requestDTO) {
+            @RequestBody CodesDTO codesDTO) {
 
-        examQuestionService.addQuestionsToExam(examCode, requestDTO);
+        examDataService.addQuestionsToExam(examCode, codesDTO);
         return ResponseEntity.ok("Questions added to exam.");
     }
 
@@ -50,7 +51,7 @@ public class ExamQuestionController {
             @PathVariable String examCode,
             @PathVariable String questionCode) {
 
-        examQuestionService.removeQuestionFromExam(examCode, questionCode);
+        examDataService.removeQuestionFromExam(examCode, questionCode);
         return ResponseEntity.ok("Question removed from exam.");
     }
 
@@ -58,7 +59,7 @@ public class ExamQuestionController {
     public ResponseEntity<List<QuestionBankDTO>> getAllQuestionsOfExam(
             @PathVariable String examCode) {
 
-        List<QuestionBankDTO> questions = examQuestionService.getAllQuestionsOfExam(examCode);
+        List<QuestionBankDTO> questions = examDataService.getAllQuestionsOfExam(examCode);
         return ResponseEntity.ok(questions);
     }
     
@@ -69,5 +70,22 @@ public class ExamQuestionController {
 
     	examService.addExamSection(examSectionDTO, code);
 		return ResponseEntity.ok("Section added to exam.");
+	}
+    
+    @PostMapping("/{code}/students")
+    public ResponseEntity<String> addStudentToExam(
+            @PathVariable String examCode,
+            @RequestBody CodesDTO studentCodesDTO) {
+
+    	examDataService.addStudentsToExam(examCode, studentCodesDTO);
+		return ResponseEntity.ok("Section added to exam.");
+	}
+    
+    @GetMapping("/{examCode}/students")
+    public ResponseEntity<List<UserInfoDTO>> getAllStudentsOfExam(
+			@PathVariable String examCode) {
+
+		List<UserInfoDTO> students = examDataService.getAllStudentsOfExam(examCode);
+		return ResponseEntity.ok(students);
 	}
 }

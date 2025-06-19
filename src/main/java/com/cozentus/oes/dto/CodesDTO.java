@@ -4,12 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import java.util.List;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
-@Data
-@AllArgsConstructor
-public class ExamQuestionRequestDTO {
-	@NotEmpty(message = "Exam code cannot be empty")
-    private List<String> questionCodes;
+public record CodesDTO (
+		List<String> codes
+		)
+{
+	
 }
 

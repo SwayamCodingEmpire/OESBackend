@@ -125,6 +125,7 @@ public class QuestionBank {
     	this.optionB = questionBankDTO.options().get(1);
     	this.optionC = questionBankDTO.options().get(2);
     	this.optionD = questionBankDTO.options().get(3);
+
     	this.correctOption = questionBankDTO.correctOption().charAt(0); // Assuming single character for correct option
     	this.comments = questionBankDTO.comments()!=null ? questionBankDTO.comments() : "NA";
     	this.enabled = true;

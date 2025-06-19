@@ -31,6 +31,9 @@ public record QuestionBankDTO(
 
 	    @NotNull(message = "Topic ID is required")
 	    String topicCode,
+	    
+	    @NotNull(message = "Topic ID is required")
+	    String topicName,
 
 	    Boolean enabled,
 
@@ -47,6 +50,7 @@ public record QuestionBankDTO(
 			questionBank.getCorrectOption().toString(),
 			questionBank.getComments(),
 			questionBank.getTopic().getCode(),
+			questionBank.getTopic().getName(),
 			questionBank.getEnabled(),
 			questionBank.getDifficulty(),
 			questionBank.getMarks()
