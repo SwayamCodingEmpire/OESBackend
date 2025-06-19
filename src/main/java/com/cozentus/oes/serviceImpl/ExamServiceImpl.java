@@ -51,6 +51,7 @@ public class ExamServiceImpl implements ExamService {
         exam.setName(dto.name());
         exam.setExamDate(dto.examDate());
         exam.setExamTime(dto.examTime());
+        exam.setCode(dto.code());
         return toDTO(examRepository.save(exam));
     }
 

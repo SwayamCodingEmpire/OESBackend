@@ -94,7 +94,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	            qb.setTopic(topic); // associate topic
 	            return qb;
 	        })
-	        .collect(Collectors.toList());
+	        .toList();
 
 	    questionBankRepository.saveAll(questionBanks);
 	}
