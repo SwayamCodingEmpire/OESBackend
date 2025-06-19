@@ -76,7 +76,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	@Override
 	public List<QuestionBankDTO> getAllQuestions() {
 		// TODO Auto-generated method stub
-	    List<QuestionBank> questionBanks = questionBankRepository.findAllByEnabledTrue();
+	    List<QuestionBank> questionBanks = questionBankRepository.findAllByEnabledTrueJoinFetchTopic();
 	    return questionBanks.stream()
 	            .map(QuestionBankDTO::new)
 	            .toList();
@@ -98,6 +98,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 
 	    questionBankRepository.saveAll(questionBanks);
 	}
+
 
 
 }

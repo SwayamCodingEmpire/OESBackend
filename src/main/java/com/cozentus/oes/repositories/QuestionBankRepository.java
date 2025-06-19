@@ -26,7 +26,8 @@ public interface QuestionBankRepository extends JpaRepository<QuestionBank, Inte
 	
 	List<QuestionBank> findAllByEnabledTrue(Pageable pageable);
 	
-	List<QuestionBank> findAllByEnabledTrue();
+	@Query("SELECT qb FROM QUESTION_BANK qb LEFT JOIN FETCH qb.topic WHERE qb.enabled = true")
+	List<QuestionBank> findAllByEnabledTrueJoinFetchTopic();
 
 	Optional<QuestionBank> findByCode(@NotBlank(message = "Code is required") @Size(max = 50) String code);
 	boolean existsByCode(String code);

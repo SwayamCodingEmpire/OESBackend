@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cozentus.oes.dto.ExamQuestionRequestDTO;
@@ -15,6 +16,7 @@ import com.cozentus.oes.repositories.ExamQuestionRepository;
 import com.cozentus.oes.repositories.ExamRepository;
 import com.cozentus.oes.repositories.QuestionBankRepository;
 import com.cozentus.oes.services.ExamQuestionService;
+import com.cozentus.oes.services.QuestionBankService;
 
 @Service
 public class ExamQuestionServiceImpl implements ExamQuestionService {
@@ -27,6 +29,9 @@ public class ExamQuestionServiceImpl implements ExamQuestionService {
 
     @Autowired
     private ExamQuestionRepository examQuestionRepository;
+    
+    @Autowired
+    private QuestionBankService questionBankService;
 
     @Transactional
     @Override
@@ -69,4 +74,15 @@ public class ExamQuestionServiceImpl implements ExamQuestionService {
                 .map(eq -> new QuestionBankDTO(eq.getQuestion()))
                 .collect(Collectors.toList());
     }
+    
+    
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void addInstantExam(String examCode, List<QuestionBankDTO> questionBankDTOs) {
+    	questionBankService.bulkInsertQuestions(questionBankDTOs, "INS1");
+    	List<String> codes = questionBankDTOs.stream().map(QuestionBankDTO::code).collect(Collectors.toList());
+    	addQuestionsToExam(examCode,new ExamQuestionRequestDTO(codes));
+	
+    }
+    
+    
 }
