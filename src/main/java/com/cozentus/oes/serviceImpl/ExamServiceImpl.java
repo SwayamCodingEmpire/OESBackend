@@ -7,11 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cozentus.oes.dto.ExamDTO;
+import com.cozentus.oes.dto.ExamSectionDTO;
 import com.cozentus.oes.entities.Exam;
+import com.cozentus.oes.entities.ExamSection;
+import com.cozentus.oes.entities.Topic;
 import com.cozentus.oes.exceptions.ResourceNotFoundException;
 import com.cozentus.oes.repositories.ExamRepository;
+import com.cozentus.oes.repositories.ExamSectionRepository;
+import com.cozentus.oes.repositories.TopicRepository;
 import com.cozentus.oes.services.ExamService;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -19,6 +26,12 @@ public class ExamServiceImpl implements ExamService {
 
     @Autowired
     private ExamRepository examRepository;
+    @Autowired
+    private TopicRepository topicRepository;
+    @Autowired
+    private ExamSectionRepository examSectionRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public ExamDTO createExam(ExamDTO dto) {
@@ -72,4 +85,31 @@ public class ExamServiceImpl implements ExamService {
 				exam.getExamTime()
 		);
     }
+    
+    @Transactional
+    public void addExamSection(List<ExamSectionDTO> examSectionDTOs, String examCode) {
+        // Set the Exam reference using EntityManager
+        Exam exam = examRepository.findByCode(examCode).orElseThrow(() -> new ResourceNotFoundException("Exam not found with code: " + examCode));
+
+        // Iterate through the list of ExamSectionDTOs
+        for (ExamSectionDTO dto : examSectionDTOs) {
+            // Set the Topic reference using EntityManager
+            Topic topic = topicRepository.findByCode(dto.topicCode())
+				.orElseThrow(() -> new ResourceNotFoundException("Topic not found with ID: " + dto.topicCode()));
+
+            // Create a new ExamSection
+            ExamSection examSection = ExamSection.builder()
+                .exam(exam)
+                .section(topic)
+                .duration(dto.duration())
+                .totalMarks(dto.totalMarks())
+                .enabled(true)
+                .build();
+
+            // Save the ExamSection
+            examSectionRepository.save(examSection);
+        }
+    }
+
+
 }

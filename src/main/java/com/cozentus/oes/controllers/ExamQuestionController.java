@@ -13,17 +13,28 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cozentus.oes.dto.ExamQuestionRequestDTO;
+import com.cozentus.oes.dto.ExamSectionDTO;
 import com.cozentus.oes.dto.QuestionBankDTO;
 import com.cozentus.oes.services.ExamQuestionService;
-
+import com.cozentus.oes.services.ExamService;
+import com.cozentus.oes.util.EmailService;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/v1/exam")
 public class ExamQuestionController {
 
+    private final EmailService emailService;
+
     @Autowired
     private ExamQuestionService examQuestionService;
+    
+    ExamQuestionController(EmailService emailService) {
+        this.emailService = emailService;
+    }
+
+    @Autowired
+    private ExamService examService;
 
     @PostMapping("/{examCode}/question")
     public ResponseEntity<String> addQuestionsToExam(
@@ -50,4 +61,13 @@ public class ExamQuestionController {
         List<QuestionBankDTO> questions = examQuestionService.getAllQuestionsOfExam(examCode);
         return ResponseEntity.ok(questions);
     }
+    
+    @PostMapping("/{code}/sections")
+    public ResponseEntity<String> addSectionToExam(
+			@PathVariable String code,
+			@Valid @RequestBody List<ExamSectionDTO> examSectionDTO) {
+
+    	examService.addExamSection(examSectionDTO, code);
+		return ResponseEntity.ok("Section added to exam.");
+	}
 }
