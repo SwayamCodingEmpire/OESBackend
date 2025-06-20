@@ -8,6 +8,7 @@ import com.cozentus.oes.entities.Credentials;
 
 public interface CredentialsRepository extends JpaRepository<Credentials, Integer> {
     boolean existsByEmail(String email);
-    Optional<Credentials> findByCode(String code);
-	void deleteByCode(String code);
+	void deleteByEmail(String email);
+	
+	Optional<Credentials> findByEmail(String code);
 }

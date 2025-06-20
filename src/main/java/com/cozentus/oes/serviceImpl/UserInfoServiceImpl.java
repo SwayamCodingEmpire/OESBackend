@@ -1,14 +1,17 @@
 package com.cozentus.oes.serviceImpl;import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cozentus.oes.dto.RegisterStudentDTO;
 import com.cozentus.oes.dto.UserInfoDTO;
 import com.cozentus.oes.entities.Credentials;
 import com.cozentus.oes.entities.UserInfo;
+import com.cozentus.oes.helpers.Roles;
 import com.cozentus.oes.repositories.CredentialsRepository;
 import com.cozentus.oes.repositories.UserInfoRepository;
 import com.cozentus.oes.services.UserInfoService;
@@ -27,10 +30,11 @@ public class UserInfoServiceImpl implements UserInfoService {
 	private final UserInfoRepository userInfoRepository;
 	private final CredentialsRepository credentialsRepository;
 	private final EmailService emailService;
+	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
 	public List<UserInfoDTO> getAll() {
-		return userInfoRepository.findAll().stream().map(this::convertToDTO).toList();
+		return userInfoRepository.findAllByCredentialsRole(Roles.STUDENT).stream().map(this::convertToDTO).toList();
 	}
 
 	@Override
@@ -50,7 +54,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 		existing.setEmail(userInfoDTO.getEmail());
 		existing.setPhoneNo(userInfoDTO.getPhoneNo());
 
-		credentialsRepository.findByCode(userInfoDTO.getCode()).ifPresent(credentials -> {
+		credentialsRepository.findByEmail(userInfoDTO.getEmail()).ifPresent(credentials -> {
 			credentials.setEmail(userInfoDTO.getEmail()); // Update email in credentials
 			credentialsRepository.save(credentials);
 		});
@@ -63,8 +67,10 @@ public class UserInfoServiceImpl implements UserInfoService {
 		if (!userInfoRepository.existsByCode(code))
 			throw new RuntimeException("Student not found");
 		{
+			UserInfo userInfo = userInfoRepository.findByCode(code)
+					.orElseThrow(() -> new RuntimeException("Student not found"));
 			userInfoRepository.deleteByCode(code);
-			credentialsRepository.deleteByCode(code);
+			credentialsRepository.deleteById(userInfo.getCredentials().getId());
 		}
 	}
 
@@ -84,9 +90,11 @@ public class UserInfoServiceImpl implements UserInfoService {
 		if (credentialsRepository.existsByEmail(registerStudentDTO.getEmail())) {
 			throw new RuntimeException("Email already exists");
 		}
+        String randomPart = UUID.randomUUID().toString().replace("-", "").substring(0, 6).toUpperCase();
+        String randomPassword = "STUD" + randomPart;
 
-		Credentials credentials = Credentials.builder().code(registerStudentDTO.getCode()).email(registerStudentDTO.getEmail())
-				.password("student@123").role("STUDENT").build();
+		Credentials credentials = Credentials.builder().email(registerStudentDTO.getEmail())
+				.password(bCryptPasswordEncoder.encode(randomPassword)).role(Roles.STUDENT).build();
 		Credentials savedCreds = credentialsRepository.save(credentials);
 
 		UserInfo userInfo = UserInfo.builder().code(registerStudentDTO.getCode()).name(registerStudentDTO.getName()).email(registerStudentDTO.getEmail())
@@ -95,8 +103,8 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 		try {
 			emailService.sendVerificationEmail(registerStudentDTO.getEmail(), "Registration Successful",
-					"Welcome " + registerStudentDTO.getName() + ", your registration is successful. Your credentials are:\nCode: "
-							+ registerStudentDTO.getCode() + "\nPassword: student@123");
+					"Welcome " + registerStudentDTO.getName() + ", your registration is successful. Your credentials are:\nEmail: "
+							+ registerStudentDTO.getEmail() + "\nPassword: " + randomPassword);
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		}
@@ -109,7 +117,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 	public void bulkUpload(List<UserInfoDTO> userInfoDTOList) {
 		// Step 1: Prepare lists to collect objects
 		List<Credentials> credentialsList = userInfoDTOList.stream().map(user -> Credentials.builder()
-				.code(user.getCode()).email(user.getEmail()).password("student@123").role("STUDENT").build())
+				.email(user.getEmail()).password("student@123").role(Roles.STUDENT).build())
 				.collect(Collectors.toList());
 
 		// Save all credentials first (to get DB-generated IDs)
@@ -117,7 +125,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 		// Build a map for quick lookup by code
 		Map<String, Credentials> credentialsMap = credentialsList.stream()
-				.collect(Collectors.toMap(Credentials::getCode, c -> c));
+				.collect(Collectors.toMap(Credentials::getEmail, c -> c));
 
 		// Prepare and collect all UserInfo, linking credentials
 		List<UserInfo> userInfoList = userInfoDTOList.stream()
@@ -136,7 +144,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 				emailService.sendVerificationEmail(credentials.getEmail(), "Registration Successful",
 						"Welcome " + userInfo.getName()
 								+ ", your registration is successful. Your credentials are:\nCode: "
-								+ credentials.getCode() + "\nPassword: " + credentials.getPassword());
+								+ credentials.getEmail() + "\nPassword: " + credentials.getPassword());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,8 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cozentus.oes.dto.CodesDTO;
 import com.cozentus.oes.dto.ExamSectionDTO;
 import com.cozentus.oes.dto.QuestionBankDTO;
+import com.cozentus.oes.dto.SectionDetailDTO;
 import com.cozentus.oes.dto.UserInfoDTO;
 import com.cozentus.oes.services.ExamDataService;
+import com.cozentus.oes.services.ExamSectionService;
 import com.cozentus.oes.services.ExamService;
 import com.cozentus.oes.util.EmailService;
 import jakarta.validation.Valid;
@@ -26,6 +29,8 @@ import jakarta.validation.Valid;
 public class ExamDataController {
 
     private final EmailService emailService;
+    @Autowired
+    private ExamSectionService sectionService;
 
     @Autowired
     private ExamDataService examDataService;
@@ -54,6 +59,7 @@ public class ExamDataController {
         examDataService.removeQuestionFromExam(examCode, questionCode);
         return ResponseEntity.ok("Question removed from exam.");
     }
+
 
     @GetMapping("/{examCode}/questions/all")
     public ResponseEntity<List<QuestionBankDTO>> getAllQuestionsOfExam(
@@ -106,5 +112,13 @@ public class ExamDataController {
 		examDataService.deleteStudentFromExam(examCode, studentCode);
 		return ResponseEntity.noContent().build();
 	}
+    
+    @GetMapping("/{examCode}/sections")
+    public ResponseEntity<List<SectionDetailDTO>> getAllSectionDetails(
+        @PathVariable String examCode) {
+      return ResponseEntity.ok(
+        sectionService.getSectionsByExamCode(examCode)
+      );
+    }
 
 }

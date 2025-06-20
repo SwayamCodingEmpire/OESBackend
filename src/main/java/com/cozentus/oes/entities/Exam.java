@@ -55,6 +55,7 @@ public class Exam {
     @Column(nullable = false)
     private Integer duration;
 
+    @Builder.Default
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean enabled = Boolean.TRUE;
 

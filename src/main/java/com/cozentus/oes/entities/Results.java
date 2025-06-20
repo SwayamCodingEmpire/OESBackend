@@ -48,6 +48,7 @@ public class Results {
     @Column(name = "publish_date")
     private LocalDate publishDate;
 
+    @Builder.Default
     @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean enabled = Boolean.TRUE;
 

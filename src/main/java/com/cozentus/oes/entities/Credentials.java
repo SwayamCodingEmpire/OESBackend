@@ -5,8 +5,12 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.cozentus.oes.helpers.Roles;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,8 +32,6 @@ public class Credentials {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 50, nullable = false, unique = true)
-    private String code;
 
     @Column(length = 100, nullable = false, unique = true)
     private String email;
@@ -37,9 +39,11 @@ public class Credentials {
     @Column(length = 255, nullable = false)
     private String password;
 
-    @Column(length = 50, nullable = false)
-    private String role;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Roles role;
 
+    @Builder.Default
     @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean enabled = Boolean.TRUE;
 

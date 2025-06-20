@@ -18,7 +18,7 @@ import com.cozentus.oes.services.ResultsService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/v1/exams")
+@RequestMapping("/v1/take-exam")
 public class ResultsController {
 
     @Autowired private ExamDataService examQuestionService;
