@@ -22,7 +22,7 @@ import com.cozentus.oes.services.UserInfoService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/admin/Student")
+@RequestMapping("/v1/student")
 @RequiredArgsConstructor
 public class UserInfoController {
 
