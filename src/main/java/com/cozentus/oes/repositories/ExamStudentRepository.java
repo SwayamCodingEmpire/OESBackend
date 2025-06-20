@@ -1,6 +1,6 @@
 package com.cozentus.oes.repositories;
-
 import java.util.List;
+
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +16,6 @@ public interface ExamStudentRepository extends JpaRepository<ExamStudent, Intege
 	List<ExamStudent> findByExam(Exam exam);
 	
 	void deleteByExamIdAndStudentId(Integer examId, Integer studentId);
+	Optional<ExamStudent> findByExamAndStudentIsNull(Exam exam);
 }
+

@@ -151,6 +151,7 @@ public class ExamDataServiceImpl implements ExamDataService {
         Exam exam = examRepository.findByCode(examCode)
                 .orElseThrow(() -> new RuntimeException("Exam not found with code: " + examCode));
 
+        System.out.println("Exam found: " + exam.getCode());
         return examStudentRepository.findByExam(exam).stream()
         	    .map(examStudent -> new UserInfoDTO(examStudent.getStudent()))
         	    .collect(Collectors.toList());

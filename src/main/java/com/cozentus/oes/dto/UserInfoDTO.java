@@ -20,6 +20,7 @@ public class UserInfoDTO {
     private String phoneNo;
     
     public UserInfoDTO(UserInfo userInfo) {
+    	System.out.println("UserInfoDTO constructor called with userInfo: ");
 		this.code = userInfo.getCode();
 		this.name = userInfo.getName();
 		this.email = userInfo.getEmail();
