@@ -31,5 +31,7 @@ public interface QuestionBankRepository extends JpaRepository<QuestionBank, Inte
 
 	Optional<QuestionBank> findByCode(@NotBlank(message = "Code is required") @Size(max = 50) String code);
 	boolean existsByCode(String code);
+    List<QuestionBank> findAllByCodeIn(List<String> codes);
+
 
 }
