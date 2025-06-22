@@ -2,6 +2,7 @@ package com.cozentus.oes.serviceImpl;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	}
 	
 	@Override
+	@Cacheable(value = "userDetailsCache", key = "#email")
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		// Implement your logic to load user details by username
 		// For example, you can fetch user details from the database

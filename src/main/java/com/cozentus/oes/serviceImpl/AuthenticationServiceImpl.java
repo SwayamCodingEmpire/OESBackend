@@ -1,11 +1,15 @@
 package com.cozentus.oes.serviceImpl;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import com.cozentus.oes.config.CustomAuthDetails;
 import com.cozentus.oes.dto.LoginDTO;
 import com.cozentus.oes.dto.LoginResponseDTO;
 import com.cozentus.oes.helpers.Roles;
@@ -44,6 +48,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } else {
             throw new IllegalStateException("User is Invalid");
         }
+	}
+	@Override
+	public Pair<Integer, String> getCurrentUserDetails() {
+		// TODO Auto-generated method stub
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+    	CustomAuthDetails auth = (CustomAuthDetails)authentication.getDetails();
+    	return Pair.of(auth.userId(), userDetails.getUsername());
+    	
 	}
 
 }

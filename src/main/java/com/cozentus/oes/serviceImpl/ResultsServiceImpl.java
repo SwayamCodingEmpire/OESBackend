@@ -51,7 +51,6 @@ public class ResultsServiceImpl implements ResultsService {
             .orElseGet(() ->
                 examStudentRepo.save(ExamStudent.builder()
                     .exam(exam)
-                    .enabled(true)
                     .build()
                 )
             );

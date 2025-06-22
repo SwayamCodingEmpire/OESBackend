@@ -27,8 +27,6 @@ public class ExamStudent {
     @JoinColumn(name = "student_id")
     private UserInfo student;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private Boolean enabled = Boolean.TRUE;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

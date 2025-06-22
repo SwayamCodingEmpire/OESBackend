@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cozentus.oes.dto.CodeAndNameDTO;
+import com.cozentus.oes.dto.ExamQuestionkInsertionDTO;
+import com.cozentus.oes.dto.IdAndCodeDTO;
 import com.cozentus.oes.entities.Topic;
 
 public interface TopicRepository extends JpaRepository<Topic, Integer> {
@@ -24,6 +26,9 @@ public interface TopicRepository extends JpaRepository<Topic, Integer> {
 	@Modifying
 	@Transactional
 	int deleteByCode(String code);
+	
+	List<IdAndCodeDTO> findAllByCodeInAndEnabledTrue(List<String> codes);
+	
 	
 //	@Query("SELECT COUNT(t) FROM Topic t WHERE t.code IN :codes")
 //	long countByCodeIn(@Param("codes") List<String> codes);

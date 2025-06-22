@@ -50,9 +50,6 @@ public class ExamSection {
     @Column(name = "total_marks", nullable = false)
     private Integer totalMarks;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")
-    private Boolean enabled = Boolean.TRUE;
-
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

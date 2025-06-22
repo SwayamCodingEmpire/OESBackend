@@ -24,7 +24,7 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private static final String[] PUBLIC_URLS = {
-    		"v1/login",
+    		"/v1/login",
 
     };
     
@@ -40,7 +40,7 @@ public class SecurityConfig {
     	    "/v1/exams/**",  // full exam CRUD
     	    "/v1/exam/**",   // mapping students/questions/sections
     	    "/v1/student/**",
-    		"v1/student/**"
+    		"/v1/student/**"
     	};
 
     
@@ -60,7 +60,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.authorizeHttpRequests(authorize->{
             authorize.requestMatchers(PUBLIC_URLS).permitAll();
-            authorize.requestMatchers(HttpMethod.GET, "/v1/exams/all").hasAnyRole("STUDENT", "ADMIN");
+            authorize.requestMatchers("/v1/exams/all").hasAnyRole("STUDENT", "ADMIN");
             authorize.requestMatchers(HttpMethod.GET,"/v1/exam/**").hasAnyRole("STUDENT","ADMIN"); // allow viewing exams
             authorize.requestMatchers("/v1/take-exam/**").hasAnyRole("STUDENT");
             authorize.requestMatchers(HttpMethod.GET,STUDENT_URLS).hasAnyRole("STUDENT","ADMIN");

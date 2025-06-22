@@ -12,7 +12,7 @@ public interface UserInfoService {
     List<UserInfoDTO> getAll();
     UserInfoDTO add(UserInfoDTO dto);
     UserInfoDTO updateUserInfo(UserInfoDTO dto);
-    void deleteByCode(String code);
+    void deleteByCode(String email, String code);
     UserInfoDTO registerStudent(RegisterStudentDTO dto);
 	void bulkUpload(List<UserInfoDTO> userInfoDTOList);
 }

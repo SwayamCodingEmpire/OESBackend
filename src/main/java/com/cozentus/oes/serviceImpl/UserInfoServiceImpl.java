@@ -4,6 +4,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserInfoServiceImpl implements UserInfoService {
+	private final Logger logger = LoggerFactory.getLogger(UserInfoServiceImpl.class);
 
 	private final UserInfoRepository userInfoRepository;
 	private final CredentialsRepository credentialsRepository;
@@ -47,6 +52,10 @@ public class UserInfoServiceImpl implements UserInfoService {
 	}
 
 	@Override
+	@Caching(evict = {
+		    @CacheEvict(value = "userInfo", key = "#userInfoDTO.email"),
+		    @CacheEvict(value = "userDetailsCache", key = "#userInfoDTO.email")
+		})
 	public UserInfoDTO updateUserInfo(UserInfoDTO userInfoDTO) {
 		UserInfo existing = userInfoRepository.findByCode(userInfoDTO.getCode())
 				.orElseThrow(() -> new RuntimeException("Student not found"));
@@ -63,12 +72,20 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 	@Override
 	@Transactional
-	public void deleteByCode(String code) {
+	@Caching(evict = {
+		    @CacheEvict(value = "userInfo", key = "#email"),
+		    @CacheEvict(value = "userDetailsCache", key = "#email")
+		})
+	public void deleteByCode(String email, String code) {
+		logger.info("Deleting student with code: {}", code);
 		if (!userInfoRepository.existsByCode(code))
 			throw new RuntimeException("Student not found");
+		else
 		{
+			logger.info("Deleting student with code: {}", code);
 			UserInfo userInfo = userInfoRepository.findByCode(code)
 					.orElseThrow(() -> new RuntimeException("Student not found"));
+			logger.info("Deleting credentials for student with code: {}", code);
 			userInfoRepository.deleteByCode(code);
 			credentialsRepository.deleteById(userInfo.getCredentials().getId());
 		}

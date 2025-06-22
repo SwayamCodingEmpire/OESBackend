@@ -1,10 +1,10 @@
 package com.cozentus.oes.serviceImpl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cozentus.oes.dto.QuestionBankDTO;
@@ -83,7 +83,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
 	}
 	
 	@Override
-	@Transactional
+	@Transactional(propagation = Propagation.REQUIRED)
 	public void bulkInsertQuestions(List<QuestionBankDTO> questionBankDTOs, String topicCode) {
 	    Topic topic = topicRepository.findByCode(topicCode)
 	            .orElseThrow(() -> new ResourceNotFoundException("Invalid Topic: " + topicCode));

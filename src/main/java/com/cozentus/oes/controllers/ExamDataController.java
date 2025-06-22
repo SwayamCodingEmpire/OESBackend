@@ -73,7 +73,6 @@ public class ExamDataController {
     public ResponseEntity<String> addSectionToExam(
 			@PathVariable String code,
 			@Valid @RequestBody List<ExamSectionDTO> examSectionDTO) {
-
     	examService.addExamSection(examSectionDTO, code);
 		return ResponseEntity.ok("Section added to exam.");
 	}

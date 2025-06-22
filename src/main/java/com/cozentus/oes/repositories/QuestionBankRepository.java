@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cozentus.oes.dto.ExamQuestionkInsertionDTO;
 import com.cozentus.oes.entities.QuestionBank;
-import com.cozentus.oes.entities.Topic;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -24,14 +24,24 @@ public interface QuestionBankRepository extends JpaRepository<QuestionBank, Inte
 	@Query("UPDATE QUESTION_BANK q SET q.enabled = false WHERE q.code = :code")
 	int softDeleteByCode(String code);
 	
+	
 	List<QuestionBank> findAllByEnabledTrue(Pageable pageable);
+	
 	
 	@Query("SELECT qb FROM QUESTION_BANK qb LEFT JOIN FETCH qb.topic WHERE qb.enabled = true")
 	List<QuestionBank> findAllByEnabledTrueJoinFetchTopic();
+	
 
 	Optional<QuestionBank> findByCode(@NotBlank(message = "Code is required") @Size(max = 50) String code);
+	
+	
 	boolean existsByCode(String code);
+	
     List<QuestionBank> findAllByCodeIn(List<String> codes);
+    
+
+    
+    List<ExamQuestionkInsertionDTO> findAllByCodeInAndEnabledTrue(List<String> codes);
 
 
 }

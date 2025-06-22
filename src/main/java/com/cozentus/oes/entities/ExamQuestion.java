@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.cozentus.oes.dto.ExamQuestionkInsertionDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,7 +29,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ExamQuestion {
 
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -35,12 +37,11 @@ public class ExamQuestion {
     @JoinColumn(name = "exam_id", nullable = false)
     private Exam exam;
 
+    
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private QuestionBank question;
 
-    @Column(columnDefinition = "boolean default true")
-    private Boolean enabled = Boolean.TRUE;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

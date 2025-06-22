@@ -1,13 +1,18 @@
 package com.cozentus.oes.serviceImpl;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cozentus.oes.dto.CodesDTO;
+import com.cozentus.oes.dto.ExamQuestionkInsertionDTO;
 import com.cozentus.oes.dto.ExamSectionDTO;
 import com.cozentus.oes.dto.QuestionBankDTO;
 import com.cozentus.oes.dto.UserInfoDTO;
@@ -21,12 +26,20 @@ import com.cozentus.oes.repositories.ExamRepository;
 import com.cozentus.oes.repositories.ExamStudentRepository;
 import com.cozentus.oes.repositories.QuestionBankRepository;
 import com.cozentus.oes.repositories.UserInfoRepository;
+import com.cozentus.oes.services.AuthenticationService;
 import com.cozentus.oes.services.ExamDataService;
 import com.cozentus.oes.services.ExamService;
 import com.cozentus.oes.services.QuestionBankService;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 @Service
 public class ExamDataServiceImpl implements ExamDataService {
+	private final Logger logger = LoggerFactory.getLogger(ExamDataServiceImpl.class);
+	
+	@Autowired
+	private AuthenticationService authenticationService;
 
     @Autowired
     private ExamRepository examRepository;
@@ -48,27 +61,50 @@ public class ExamDataServiceImpl implements ExamDataService {
     
     @Autowired
     private ExamService examService;
+    
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Transactional
     @Override
-    public void addQuestionsToExam(String examCode, CodesDTO requestDTO) {
+    public void addQuestionsToExam(String examCode, CodesDTO codesDTO) {
+    	
+    	String username = authenticationService.getCurrentUserDetails().getRight();
         Exam exam = examRepository.findByCode(examCode)
                 .orElseThrow(() -> new RuntimeException("Exam not found with code: " + examCode));
+        
+        LocalDateTime examStartDateTime = LocalDateTime.of(exam.getExamDate(), exam.getExamTime());
 
-        for (String questionCode : requestDTO.codes()) {
-            QuestionBank question = questionBankRepository.findByCode(questionCode)
-                    .orElseThrow(() -> new RuntimeException("Question not found with code: " + questionCode));
-
-            boolean exists = examQuestionRepository.findByExamAndQuestion(exam, question).isPresent();
-            if (!exists) {
-                ExamQuestion examQuestion = ExamQuestion.builder()
-                        .exam(exam)
-                        .question(question)
-                        .enabled(true)
-                        .build();
-                examQuestionRepository.save(examQuestion);
-            }
+        // Check if the exam has already started
+        if (exam.getExamDate() != null && exam.getExamTime() != null &&
+            examStartDateTime.isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Cannot add students to an exam that has already started.");
         }
+        List<ExamQuestion> examQuestions = new ArrayList<>();
+        logger.info("Adding questions to exam: {}", examCode);
+        List<ExamQuestionkInsertionDTO> examQuestionkInsertionDTO = questionBankRepository.findAllByCodeInAndEnabledTrue(codesDTO.codes());
+        int totalMarks = 0;
+        int totalDuration = 0;
+
+        for (var question : examQuestionkInsertionDTO) {
+            QuestionBank questionBank = entityManager.getReference(QuestionBank.class, question.id());
+
+            ExamQuestion examQuestion = new ExamQuestion();
+            examQuestion.setExam(exam);
+            examQuestion.setQuestion(questionBank);
+            examQuestion.setCreatedBy(username);
+
+            totalMarks += questionBank.getMarks() == null ? 0 : questionBank.getMarks();
+            totalDuration += questionBank.getDuration()==null ? 0 : questionBank.getDuration();
+            examQuestions.add(examQuestion);
+
+            // exam.getExamQuestions().add(examQuestion); // if needed
+        }
+
+        exam.setTotalMarks(totalMarks);
+        exam.setDuration(totalDuration);
+        exam.setUpdatedBy(username);
+        examQuestionRepository.saveAll(examQuestions);
     }
 
     @Transactional
@@ -117,6 +153,8 @@ public class ExamDataServiceImpl implements ExamDataService {
 
         // Create ExamSectionDTO with topicCode "INS1"
         ExamSectionDTO sectionDTO = new ExamSectionDTO("INS1", totalDuration, totalMarks);
+        
+        
 
         // Add section to the exam
         examService.addExamSection(List.of(sectionDTO), examCode);
@@ -126,23 +164,40 @@ public class ExamDataServiceImpl implements ExamDataService {
     @Transactional
     @Override
     public void addStudentsToExam(String examCode, CodesDTO requestDTO) {
+    	String username = authenticationService.getCurrentUserDetails().getRight();
         Exam exam = examRepository.findByCode(examCode)
                 .orElseThrow(() -> new RuntimeException("Exam not found with code: " + examCode));
+        
+        if (requestDTO.codes() == null || requestDTO.codes().isEmpty()) {
+			throw new RuntimeException("No student codes provided.");
+		}
+        
+     // Combine start date and time
+        LocalDateTime examStartDateTime = LocalDateTime.of(exam.getExamDate(), exam.getExamTime());
 
-        for (String studentCode : requestDTO.codes()) {
-            UserInfo student = userInfoRepository.findByCode(studentCode)
-                    .orElseThrow(() -> new RuntimeException("Question not found with code: " + studentCode));
-
-            boolean exists = examStudentRepository.findByExamAndStudent(exam, student).isPresent();
-            if (!exists) {
-                ExamStudent examQuestion = ExamStudent.builder()
-                        .exam(exam)
-                        .student(student)
-                        .enabled(true)
-                        .build();
-                examStudentRepository.save(examQuestion);
-            }
+        // Check if the exam has already started
+        if (exam.getExamDate() != null && exam.getExamTime() != null &&
+            examStartDateTime.isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Cannot add students to an exam that has already started.");
         }
+        
+        List<UserInfo> students = userInfoRepository.findAllByCodeInAndEnabledTrue(requestDTO.codes());
+        List<ExamStudent> saveExamStudents = new ArrayList<>();
+        
+        for (UserInfo student : students) {
+        	ExamStudent examStudent = new ExamStudent();
+			examStudent.setExam(exam);
+			examStudent.setStudent(student);
+			examStudent.setCreatedBy(username);
+			saveExamStudents.add(examStudent);
+			
+		}
+        if (saveExamStudents.isEmpty()) {
+			throw new RuntimeException("No valid students found to add to the exam.");
+		}
+		
+		examStudentRepository.saveAll(saveExamStudents);
+		logger.info("Added {} students to exam: {}", saveExamStudents.size(), examCode);
     }
     
     @Override
