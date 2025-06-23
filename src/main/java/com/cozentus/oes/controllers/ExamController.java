@@ -48,4 +48,5 @@ public class ExamController {
         examService.deleteExam(code);
         return ResponseEntity.noContent().build();
     }
+    
 }

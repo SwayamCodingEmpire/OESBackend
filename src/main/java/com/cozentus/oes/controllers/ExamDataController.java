@@ -119,5 +119,6 @@ public class ExamDataController {
         sectionService.getSectionsByExamCode(examCode)
       );
     }
+    
 
 }

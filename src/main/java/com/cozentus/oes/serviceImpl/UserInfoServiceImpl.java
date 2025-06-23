@@ -7,6 +7,7 @@ import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,11 +39,13 @@ public class UserInfoServiceImpl implements UserInfoService {
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
+	@Cacheable(value = "userInfoAll", key = "'allusersInfo'")
 	public List<UserInfoDTO> getAll() {
 		return userInfoRepository.findAllByCredentialsRole(Roles.STUDENT).stream().map(this::convertToDTO).toList();
 	}
 
 	@Override
+	@CacheEvict(value = "userInfo", key = "'allusersInfo'")
 	public UserInfoDTO add(UserInfoDTO userInfoDTO) {
 		if (userInfoRepository.existsByCode(userInfoDTO.getCode())) {
 			throw new RuntimeException("Student with code already exists");
@@ -53,6 +56,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 	@Override
 	@Caching(evict = {
+			@CacheEvict(value = "userInfoAll", key = "'allusersInfo'"),
 		    @CacheEvict(value = "userInfo", key = "#userInfoDTO.email"),
 		    @CacheEvict(value = "userDetailsCache", key = "#userInfoDTO.email")
 		})
@@ -73,6 +77,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 	@Override
 	@Transactional
 	@Caching(evict = {
+			@CacheEvict(value = "userInfoAll", key = "'allusersInfo'"),
 		    @CacheEvict(value = "userInfo", key = "#email"),
 		    @CacheEvict(value = "userDetailsCache", key = "#email")
 		})
@@ -103,6 +108,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 	@Override
 	@Transactional
+	@CacheEvict(value = "userInfo", key = "'allusersInfo'")
 	public UserInfoDTO registerStudent(RegisterStudentDTO registerStudentDTO) {
 		if (credentialsRepository.existsByEmail(registerStudentDTO.getEmail())) {
 			throw new RuntimeException("Email already exists");
@@ -131,6 +137,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 	@Override
 	@Transactional
+	@CacheEvict(value = "userInfo", key = "'allusersInfo'")
 	public void bulkUpload(List<UserInfoDTO> userInfoDTOList) {
 		// Step 1: Prepare lists to collect objects
 		List<Credentials> credentialsList = userInfoDTOList.stream().map(user -> Credentials.builder()

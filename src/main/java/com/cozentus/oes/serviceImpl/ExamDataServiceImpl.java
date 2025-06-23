@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cozentus.oes.dto.CodesDTO;
+import com.cozentus.oes.dto.ExamDTO;
 import com.cozentus.oes.dto.ExamQuestionkInsertionDTO;
 import com.cozentus.oes.dto.ExamSectionDTO;
 import com.cozentus.oes.dto.QuestionBankDTO;
@@ -64,6 +65,8 @@ public class ExamDataServiceImpl implements ExamDataService {
     
     @PersistenceContext
     private EntityManager entityManager;
+    
+
 
     @Transactional
     @Override
@@ -223,6 +226,13 @@ public class ExamDataServiceImpl implements ExamDataService {
 				.orElseThrow(() -> new RuntimeException("Exam not found with code: " + examCode))
 				.getId());
 		
+	}
+
+	@Override
+	public List<ExamDTO> getAllExamsByStudent(Integer id) {
+		// TODO Auto-generated method stub
+		return examStudentRepository.findAllByStudentId(id);
+			
 	}
     
     

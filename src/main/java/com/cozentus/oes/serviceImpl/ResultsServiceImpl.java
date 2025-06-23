@@ -18,12 +18,15 @@ import com.cozentus.oes.entities.ExamSection;
 import com.cozentus.oes.entities.ExamStudent;
 import com.cozentus.oes.entities.QuestionBank;
 import com.cozentus.oes.entities.Results;
+import com.cozentus.oes.entities.UserInfo;
 import com.cozentus.oes.exceptions.ResourceNotFoundException;
 import com.cozentus.oes.repositories.ExamRepository;
 import com.cozentus.oes.repositories.ExamSectionRepository;
 import com.cozentus.oes.repositories.ExamStudentRepository;
 import com.cozentus.oes.repositories.QuestionBankRepository;
 import com.cozentus.oes.repositories.ResultsRepository;
+import com.cozentus.oes.repositories.UserInfoRepository;
+import com.cozentus.oes.services.AuthenticationService;
 import com.cozentus.oes.services.ResultsService;
 
 @Service
@@ -39,21 +42,22 @@ public class ResultsServiceImpl implements ResultsService {
     private ExamSectionRepository examSectionRepo;
     @Autowired 
     private ResultsRepository resultsRepo;
+    @Autowired
+    private AuthenticationService authenticationService;
+    @Autowired
+    private UserInfoRepository userInfoRepository;
 
     @Override
     @Transactional
     public void submitExam(String examCode, List<AnswerDTO> answers) {
+    	Integer studentId = authenticationService.getCurrentUserDetails().getLeft();
         Exam exam = examRepo.findByCode(examCode)
             .orElseThrow(() -> new ResourceNotFoundException("Exam not found: " + examCode));
-
+        
+        UserInfo student1 = userInfoRepository.findById(studentId).orElseThrow(()-> new ResourceNotFoundException("Student not found with ID: " + studentId));
         ExamStudent student = examStudentRepo
-            .findByExamAndStudentIsNull(exam)
-            .orElseGet(() ->
-                examStudentRepo.save(ExamStudent.builder()
-                    .exam(exam)
-                    .build()
-                )
-            );
+            .findByExamAndStudent(exam,student1)
+            .orElseThrow(()->new ResourceNotFoundException(examCode));
 
         Map<String, QuestionBank> questionMap = questionRepo
             .findAllByCodeIn(answers.stream()

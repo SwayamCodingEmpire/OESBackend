@@ -1,6 +1,7 @@
 package com.cozentus.oes.services;
 
 import com.cozentus.oes.dto.CodesDTO;
+import com.cozentus.oes.dto.ExamDTO;
 import com.cozentus.oes.dto.QuestionBankDTO;
 import com.cozentus.oes.dto.UserInfoDTO;
 
@@ -21,4 +22,6 @@ public interface ExamDataService {
     void addInstantExam(String examCode, List<QuestionBankDTO> questionBankDTOs);
 
 	void deleteStudentFromExam(String examCode, String studentCode);
+
+	List<ExamDTO> getAllExamsByStudent(Integer id);
 }

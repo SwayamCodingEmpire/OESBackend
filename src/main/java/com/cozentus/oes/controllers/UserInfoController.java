@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cozentus.oes.dto.ExamDTO;
 import com.cozentus.oes.dto.RegisterStudentDTO;
 import com.cozentus.oes.dto.UserInfoDTO;
+import com.cozentus.oes.services.AuthenticationService;
+import com.cozentus.oes.services.ExamDataService;
 import com.cozentus.oes.services.UserInfoService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,8 @@ import lombok.RequiredArgsConstructor;
 public class UserInfoController {
 
     private final UserInfoService userInfoService;
+    private final ExamDataService examDataService;
+    private final AuthenticationService authenticationService;
 
     @GetMapping("/all")
     public ResponseEntity<List<UserInfoDTO>> getAll() {
@@ -54,4 +59,11 @@ public class UserInfoController {
         userInfoService.deleteByCode(email, code);
         return ResponseEntity.noContent().build();
     }
+    
+    @GetMapping("/exam")
+    public ResponseEntity<List<ExamDTO>> getAllExamsByStudent() {
+    	Integer id = authenticationService.getCurrentUserDetails().getLeft();
+		return ResponseEntity.ok(examDataService.getAllExamsByStudent(id));
+	}
+
 }
