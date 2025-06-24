@@ -1,10 +1,10 @@
 // src/main/java/com/cozentus/oes/services/ResultsService.java
 package com.cozentus.oes.services;
-
+ 
 import java.util.List;
 import com.cozentus.oes.dto.AnswerDTO;
 import com.cozentus.oes.dto.SectionSummaryDTO;
-
+ 
 public interface ResultsService {
     /**
      * Calculate marks, persist ExamStudent & Results rows.
@@ -13,8 +13,7 @@ public interface ResultsService {
      * @param answers  the list of AnswerDTO objects (questionCode + answer)
      */
     void submitExam(String examCode, List<AnswerDTO> answers);
-
-
-	List<SectionSummaryDTO> getSummaryByExamCode(String examCode, Integer id);
-	
+ 
+ 
+	List<SectionSummaryDTO> getSummaryByExamCode(String examCode);
 }

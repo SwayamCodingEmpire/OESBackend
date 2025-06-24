@@ -1,6 +1,7 @@
 package com.cozentus.oes.serviceImpl;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,7 @@ import com.cozentus.oes.services.AuthenticationService;
 import com.cozentus.oes.services.JwtService;
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
+	private final Logger logger = org.slf4j.LoggerFactory.getLogger(AuthenticationServiceImpl.class);
 	private final UserDetailsService userDetailsService;
 	private final AuthenticationManager authenticationManager;
 	private final JwtService jwtService;
@@ -28,6 +30,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	}
 	@Override
 	public LoginResponseDTO authenticate(LoginDTO loginDTO) {
+		logger.info("Authenticating user with email: {}", loginDTO.email());
+		if (loginDTO.email() == null || loginDTO.password() == null) {
+			throw new IllegalArgumentException("Email and password must not be null");
+		}
 		UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginDTO.email(),loginDTO.password());
 		authenticationManager.authenticate(authToken);
 		UserDetails userDetails =  userDetailsService.loadUserByUsername(loginDTO.email());
