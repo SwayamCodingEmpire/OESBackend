@@ -44,6 +44,9 @@ public class Results {
 
     @Column(name = "marks_scored", nullable = false)
     private Integer marksScored;
+    
+    @Column(name = "time_taken_in_seconds")
+    private long timeTakenInSeconds;
 
     @Column(name = "publish_date")
     private LocalDate publishDate;
