@@ -33,15 +33,6 @@ public class ExamQuestion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "exam_id", nullable = false)
-    private Exam exam;
-
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
-    private QuestionBank question;
-
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -56,5 +47,15 @@ public class ExamQuestion {
 
     @Column(name = "updated_by", length = 50)
     private String updatedBy;
+    
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "exam_id", nullable = false)
+    private Exam exam;
+
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
+    private QuestionBank question;
 }
 

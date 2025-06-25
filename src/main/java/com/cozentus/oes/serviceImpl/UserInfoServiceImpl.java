@@ -45,7 +45,6 @@ public class UserInfoServiceImpl implements UserInfoService {
 	}
 
 	@Override
-	@CacheEvict(value = "userInfo", key = "'allusersInfo'")
 	public UserInfoDTO add(UserInfoDTO userInfoDTO) {
 		if (userInfoRepository.existsByCode(userInfoDTO.getCode())) {
 			throw new RuntimeException("Student with code already exists");
@@ -58,7 +57,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 	@Caching(evict = {
 			@CacheEvict(value = "userInfoAll", key = "'allusersInfo'"),
 		    @CacheEvict(value = "userInfo", key = "#userInfoDTO.email"),
-		    @CacheEvict(value = "userDetailsCache", key = "#userInfoDTO.email")
+		    @CacheEvict(value = "authCache", key = "#userInfoDTO.email"),
 		})
 	public UserInfoDTO updateUserInfo(UserInfoDTO userInfoDTO) {
 		UserInfo existing = userInfoRepository.findByCode(userInfoDTO.getCode())
@@ -108,7 +107,11 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 	@Override
 	@Transactional
-	@CacheEvict(value = "userInfo", key = "'allusersInfo'")
+	@Caching(evict = {
+			@CacheEvict(value = "userInfoAll", key = "'allusersInfo'"),
+		    @CacheEvict(value = "userInfo", key = "#registerStudentDTO.email"),
+		    @CacheEvict(value = "authCache", key = "#registerStudentDTO.email"),
+		})
 	public UserInfoDTO registerStudent(RegisterStudentDTO registerStudentDTO) {
 		if (credentialsRepository.existsByEmail(registerStudentDTO.getEmail())) {
 			throw new RuntimeException("Email already exists");

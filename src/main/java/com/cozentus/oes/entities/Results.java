@@ -26,22 +26,6 @@ public class Results {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(
-        name = "exam_student_id",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "results_ibfk_1")
-    )
-    private ExamStudent examStudent;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(
-        name = "exam_section_id",
-        nullable = false,
-        foreignKey = @ForeignKey(name = "fk_results_exam_section")
-    )
-    private ExamSection examSection;
-
     @Column(name = "marks_scored", nullable = false)
     private Integer marksScored;
     
@@ -68,5 +52,21 @@ public class Results {
 
     @Column(name = "updated_by", length = 50)
     private String updatedBy;
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+        name = "exam_student_id",
+        nullable = false,
+        foreignKey = @ForeignKey(name = "results_ibfk_1")
+    )
+    private ExamStudent examStudent;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+        name = "exam_section_id",
+        nullable = false,
+        foreignKey = @ForeignKey(name = "fk_results_exam_section")
+    )
+    private ExamSection examSection;
 }
 

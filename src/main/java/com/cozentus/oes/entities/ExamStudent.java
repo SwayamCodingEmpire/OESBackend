@@ -19,13 +19,6 @@ public class ExamStudent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "exam_id", nullable = false)
-    private Exam exam;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_id")
-    private UserInfo student;
 
 
     @CreationTimestamp
@@ -41,4 +34,13 @@ public class ExamStudent {
 
     @Column(name = "updated_by", length = 50)
     private String updatedBy;
+    
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "exam_id", nullable = false)
+    private Exam exam;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
+    private UserInfo student;
 }

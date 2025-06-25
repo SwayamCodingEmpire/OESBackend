@@ -36,14 +36,6 @@ public class ExamSection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "exam_id", nullable = false, foreignKey = @ForeignKey(name = "fk_exam_section_exam"))
-    private Exam exam;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "section_id", nullable = false, foreignKey = @ForeignKey(name = "fk_exam_section_topic"))
-    private Topic section;
-
     @Column(nullable = false)
     private Integer duration;
 
@@ -63,5 +55,13 @@ public class ExamSection {
 
     @Column(name = "updated_by", length = 50)
     private String updatedBy;
+    
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "exam_id", nullable = false, foreignKey = @ForeignKey(name = "fk_exam_section_exam"))
+    private Exam exam;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "section_id", nullable = false, foreignKey = @ForeignKey(name = "fk_exam_section_topic"))
+    private Topic section;
 }
 

@@ -1,4 +1,5 @@
 package com.cozentus.oes.repositories;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,15 @@ public interface ExamStudentRepository extends JpaRepository<ExamStudent, Intege
 		       "LEFT JOIN es.exam e " +
 		       "WHERE es.student.id = :studentId")
 		List<ExamDTO> findAllByStudentId(@Param("studentId") Integer studentId);
+	   
+   	@Query("""
+    	    SELECT es.exam.id, COUNT(DISTINCT es.student.id)
+    	    FROM ExamStudent es
+    	    WHERE es.exam.examDate BETWEEN :start AND :end
+    	    GROUP BY es.exam.id
+    	""")
+    	List<Object[]> findStudentCountsByExam(@Param("start") LocalDate start, @Param("end") LocalDate end);
+
 
 }
 

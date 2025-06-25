@@ -49,4 +49,9 @@ public class ExamController {
         return ResponseEntity.noContent().build();
     }
     
+    @GetMapping("/codes")
+    public ResponseEntity<List<String>> getAllExamCodes() {
+		return ResponseEntity.ok(examService.getAllExamCodes());
+	}
+    
 }

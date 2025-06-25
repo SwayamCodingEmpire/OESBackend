@@ -29,6 +29,7 @@ public class SecurityConfig {
     };
     
     private static final String[] STUDENT_URLS = {
+    		"/student/**",  // student operations
     	    "/v1/results/**",
     	    "/v1/take-exam/**",
     	    "/v1/exams/**",  // view exams
@@ -37,6 +38,7 @@ public class SecurityConfig {
     
     
     private static final String[] ADMIN_URLS = {
+    		"/v1/admin/**",  // admin operations
     	    "/v1/exams/**",  // full exam CRUD
     	    "/v1/exam/**",   // mapping students/questions/sections
     	    "/v1/student/**",

@@ -12,4 +12,5 @@ public interface ExamService {
     List<ExamDTO> getAllExams();
     void deleteExam(String code);
     void addExamSection(List<ExamSectionDTO> examSectionDTOs, String examCode);
+	List<String> getAllExamCodes();
 }

@@ -52,7 +52,6 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    @CacheEvict(value = "exams", key = "'allexams'")
     public ExamDTO updateExam(String code, ExamDTO dto) {
         Exam exam = examRepository.findByCode(code)
                 .orElseThrow(() -> new RuntimeException("Exam not found with code: " + code));
@@ -72,7 +71,6 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    @Cacheable(value = "exams", key = "'allexams'")
     public List<ExamDTO> getAllExams() {
         return examRepository.findAllByEnabledTrue()
                 .stream()
@@ -82,7 +80,6 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "exams", key = "'allexams'")
     public void deleteExam(String code) {
         if (1!=examRepository.softDeleteByCode(code)) {
 			throw new ResourceNotFoundException("Exam not found with code: " + code);
@@ -136,6 +133,15 @@ public class ExamServiceImpl implements ExamService {
         
         examSectionRepository.saveAll(examSectionWithValidTopics);
     }
+
+	@Override
+	public List<String> getAllExamCodes() {
+		// TODO Auto-generated method stub
+		return examRepository.findAllByEnabledTrue()
+				.stream()
+				.map(Exam::getCode)
+				.collect(Collectors.toList());
+	}
 
 
 }
