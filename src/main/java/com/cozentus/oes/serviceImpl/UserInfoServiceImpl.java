@@ -45,7 +45,6 @@ public class UserInfoServiceImpl implements UserInfoService {
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 	@Override
-	@Cacheable(value = "userInfoAll", key = "'allusersInfo'")
 	public List<UserInfoDTO> getAll() {
 		return userInfoRepository.findAllByCredentialsRole(Roles.STUDENT).stream().map(this::convertToDTO).toList();
 	}
@@ -60,11 +59,6 @@ public class UserInfoServiceImpl implements UserInfoService {
 	}
 
 	@Override
-	@Caching(evict = {
-			@CacheEvict(value = "userInfoAll", key = "'allusersInfo'"),
-		    @CacheEvict(value = "userInfo", key = "#userInfoDTO.email"),
-		    @CacheEvict(value = "authCache", key = "#userInfoDTO.email"),
-		})
 	public UserInfoDTO updateUserInfo(UserInfoDTO userInfoDTO) {
 		UserInfo existing = userInfoRepository.findByCode(userInfoDTO.getCode())
 				.orElseThrow(() -> new RuntimeException("Student not found"));
@@ -81,11 +75,6 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 	@Override
 	@Transactional
-	@Caching(evict = {
-			@CacheEvict(value = "userInfoAll", key = "'allusersInfo'"),
-		    @CacheEvict(value = "userInfo", key = "#email"),
-		    @CacheEvict(value = "userDetailsCache", key = "#email")
-		})
 	public void deleteByCode(String email, String code) {
 		logger.info("Deleting student with code: {}", code);
 		if (!userInfoRepository.existsByCode(code))
@@ -113,11 +102,6 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 	@Override
 	@Transactional
-	@Caching(evict = {
-			@CacheEvict(value = "userInfoAll", key = "'allusersInfo'"),
-		    @CacheEvict(value = "userInfo", key = "#registerStudentDTO.email"),
-		    @CacheEvict(value = "authCache", key = "#registerStudentDTO.email"),
-		})
 	public UserInfoDTO registerStudent(RegisterStudentDTO registerStudentDTO) {
 		if (credentialsRepository.existsByEmail(registerStudentDTO.getEmail())) {
 			throw new RuntimeException("Email already exists");
@@ -146,7 +130,6 @@ public class UserInfoServiceImpl implements UserInfoService {
 
 	@Override
 	@Transactional
-	@CacheEvict(value = "userInfo", key = "'allusersInfo'")
 	public void bulkUpload(List<UserInfoDTO> userInfoDTOList) {
 		// Step 1: Prepare lists to collect objects
 		List<Credentials> credentialsList = userInfoDTOList.stream().map(user -> Credentials.builder()

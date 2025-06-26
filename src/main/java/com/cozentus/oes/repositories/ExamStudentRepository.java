@@ -28,6 +28,7 @@ public interface ExamStudentRepository extends JpaRepository<ExamStudent, Intege
 		       "WHERE es.student.id = :studentId")
 		List<ExamDTO> findAllByStudentId(@Param("studentId") Integer studentId);
 	   
+
    	@Query("""
     	    SELECT es.exam.id, COUNT(DISTINCT es.student.id)
     	    FROM ExamStudent es
@@ -35,6 +36,13 @@ public interface ExamStudentRepository extends JpaRepository<ExamStudent, Intege
     	    GROUP BY es.exam.id
     	""")
     	List<Object[]> findStudentCountsByExam(@Param("start") LocalDate start, @Param("end") LocalDate end);
+
+	// To get all exams for a student:
+	   List<ExamStudent> findByStudentId(Integer studentId);
+	   
+	   List<ExamStudent> findByExamId(Integer examId);
+
+
 
 
 }

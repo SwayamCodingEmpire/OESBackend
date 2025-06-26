@@ -38,6 +38,8 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
 		    @Param("startOfLastMonth") LocalDateTime startOfLastMonth,
 		    @Param("endOfLastMonth") LocalDateTime endOfLastMonth);
 
+	Optional<UserInfo> findByEmail(String username);
+
 	
 
 }

@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -60,6 +61,7 @@ class OesApplicationTests {
 
 	@Test
 	void contextLoads() {
+		SecurityContextHolder.getContext().getAuthentication().getDetails();
 		System.out.println("Likun");
 	}
 
