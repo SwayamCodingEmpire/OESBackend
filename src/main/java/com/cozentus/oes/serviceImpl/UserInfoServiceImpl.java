@@ -66,7 +66,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 		existing.setEmail(userInfoDTO.getEmail());
 		existing.setPhoneNo(userInfoDTO.getPhoneNo());
 
-		credentialsRepository.findByEmail(userInfoDTO.getEmail()).ifPresent(credentials -> {
+		credentialsRepository.findByEmailAndEnabledTrue(userInfoDTO.getEmail()).ifPresent(credentials -> {
 			credentials.setEmail(userInfoDTO.getEmail()); // Update email in credentials
 			credentialsRepository.save(credentials);
 		});

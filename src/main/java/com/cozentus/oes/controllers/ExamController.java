@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cozentus.oes.dto.ExamDTO;
 import com.cozentus.oes.services.ExamService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/v1/exams")
 public class ExamController {
@@ -24,7 +26,7 @@ public class ExamController {
     private ExamService examService;
 
     @PostMapping
-    public ResponseEntity<ExamDTO> createExam(@RequestBody ExamDTO dto) {
+    public ResponseEntity<ExamDTO> createExam(@Valid @RequestBody ExamDTO dto) {
         return ResponseEntity.ok(examService.createExam(dto));
     }
 

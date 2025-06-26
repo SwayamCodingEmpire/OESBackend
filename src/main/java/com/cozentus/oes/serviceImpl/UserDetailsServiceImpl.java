@@ -23,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 	@Override
 	@Cacheable(value = "authCache", key = "#email")
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-		Credentials credentials = credentialsRepository.findByEmail(email)
+		Credentials credentials = credentialsRepository.findByEmailAndEnabledTrue(email)
 				.orElseThrow(()-> new UsernameNotFoundException("User not found with email: " + email));
 		
 		return new User(

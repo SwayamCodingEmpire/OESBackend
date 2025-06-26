@@ -10,5 +10,5 @@ public interface CredentialsRepository extends JpaRepository<Credentials, Intege
     boolean existsByEmail(String email);
 	void deleteByEmail(String email);
 	
-	Optional<Credentials> findByEmail(String code);
+	Optional<Credentials> findByEmailAndEnabledTrue(String code);
 }

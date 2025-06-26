@@ -72,4 +72,21 @@ public class Exam {
 
     @Column(name = "updated_by", length = 50)
     private String updatedBy;
+    
+    public Exam(int id, String code, String name, LocalDate examDate, LocalTime examTime, 
+				Integer totalMarks, Integer duration, Boolean enabled, 
+				LocalDateTime createdAt, String createdBy) {
+		this.id = id;
+	this.code = code;
+	this.name = name;
+	this.examDate = examDate;
+	this.examTime = examTime;
+	this.totalMarks = totalMarks;
+	this.duration = duration;
+	this.enabled = enabled;
+	this.createdAt = createdAt;
+	this.createdBy = createdBy;
+    	
+    }
+
 }
