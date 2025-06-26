@@ -3,6 +3,7 @@ package com.cozentus.oes.services;
  
 import java.util.List;
 import com.cozentus.oes.dto.AnswerDTO;
+import com.cozentus.oes.dto.LeaderboardEntryDTO;
 import com.cozentus.oes.dto.SectionSummaryDTO;
  
 public interface ResultsService {
@@ -16,4 +17,6 @@ public interface ResultsService {
  
  
 	List<SectionSummaryDTO> getSummaryByExamCode(String examCode);
+    List<LeaderboardEntryDTO> getLeaderboardForExam(String examCode);
+
 }

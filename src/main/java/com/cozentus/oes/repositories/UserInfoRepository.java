@@ -19,6 +19,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
 	Optional<UserInfo> findByEmailAndEnabledTrue(String username);
 	
 	List<UserInfo> findAllByCodeInAndEnabledTrue(List<String> codes);
+	Optional<UserInfo> findByEmail(String username);
 
 	
 

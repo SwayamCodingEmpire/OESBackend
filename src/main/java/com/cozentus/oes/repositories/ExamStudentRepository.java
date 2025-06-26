@@ -26,6 +26,13 @@ public interface ExamStudentRepository extends JpaRepository<ExamStudent, Intege
 		       "LEFT JOIN es.exam e " +
 		       "WHERE es.student.id = :studentId")
 		List<ExamDTO> findAllByStudentId(@Param("studentId") Integer studentId);
+	   
+	// To get all exams for a student:
+	   List<ExamStudent> findByStudentId(Integer studentId);
+	   
+	   List<ExamStudent> findByExamId(Integer examId);
+
+
 
 }
 

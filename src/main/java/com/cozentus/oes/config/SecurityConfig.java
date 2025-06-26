@@ -63,6 +63,9 @@ public class SecurityConfig {
             authorize.requestMatchers("/v1/exams/all").hasAnyRole("STUDENT", "ADMIN");
             authorize.requestMatchers(HttpMethod.GET,"/v1/exam/**").hasAnyRole("STUDENT","ADMIN"); // allow viewing exams
             authorize.requestMatchers("/v1/take-exam/**","/v1/student/exam").hasAnyRole("STUDENT");
+            authorize.requestMatchers("/v1/student/dashboard").hasAnyRole("STUDENT", "ADMIN");
+            authorize.requestMatchers("/v1/student/dashboard/leaderboard/**").hasAnyRole("STUDENT", "ADMIN");
+
             authorize.requestMatchers(HttpMethod.GET,STUDENT_URLS).hasAnyRole("STUDENT","ADMIN");
             authorize.requestMatchers(ADMIN_URLS).hasRole("ADMIN");
             authorize.anyRequest().authenticated();

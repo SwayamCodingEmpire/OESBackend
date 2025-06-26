@@ -26,7 +26,7 @@ public class ExamSectionServiceImpl implements ExamSectionService {
   @Override
   public List<SectionDetailDTO> getSectionsByExamCode(String examCode) {
     // 1️⃣ load sections
-    List<ExamSection> sections = sectionRepo.findByExam_Code(examCode);
+    List<ExamSection> sections = sectionRepo.findByExamCode(examCode);
 
     // 2️⃣ load all exam→question links
     List<ExamQuestion> links = questionRepo.findByExam_Code(examCode);

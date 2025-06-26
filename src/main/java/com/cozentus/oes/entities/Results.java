@@ -47,6 +47,9 @@ public class Results {
 
     @Column(name = "publish_date")
     private LocalDate publishDate;
+    
+    @Column(name="time_taken_in_seconds")
+    private Long timeTakenInSeconds;
 
     @Builder.Default
     @Column(columnDefinition = "BOOLEAN DEFAULT TRUE")

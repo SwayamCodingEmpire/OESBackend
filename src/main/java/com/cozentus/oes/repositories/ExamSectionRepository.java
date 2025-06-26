@@ -22,7 +22,9 @@ import com.cozentus.oes.entities.ExamSection;
 public interface ExamSectionRepository extends JpaRepository<ExamSection, Integer> {
     @Query("SELECT es FROM ExamSection es WHERE es.exam = :exam AND es.section.code = :sectionCode")
     Optional<ExamSection> findByExamAndSectionCode(@Param("exam") Exam exam, @Param("sectionCode") String code);
-    List<ExamSection> findByExam_Code(String examCode);
-
+    List<ExamSection> findByExamCode(String examCode);
+    List<ExamSection> findByExamId(Integer examId);
+	List<ExamSection> findBySectionId(Integer id);
+    
 
 }
