@@ -37,34 +37,38 @@ import jakarta.persistence.PersistenceContext;
 
 @Service
 public class ExamDataServiceImpl implements ExamDataService {
-	private final Logger logger = LoggerFactory.getLogger(ExamDataServiceImpl.class);
-	
-	@Autowired
-	private AuthenticationService authenticationService;
+private final Logger logger = LoggerFactory.getLogger(ExamDataServiceImpl.class);
+    
+    private final AuthenticationService authenticationService;
+    private final ExamRepository examRepository;
+    private final QuestionBankRepository questionBankRepository;
+    private final ExamQuestionRepository examQuestionRepository;
+    private final QuestionBankService questionBankService;
+    private final ExamStudentRepository examStudentRepository;
+    private final UserInfoRepository userInfoRepository;
+    private final ExamService examService;
 
-    @Autowired
-    private ExamRepository examRepository;
-
-    @Autowired
-    private QuestionBankRepository questionBankRepository;
-
-    @Autowired
-    private ExamQuestionRepository examQuestionRepository;
-    
-    @Autowired
-    private QuestionBankService questionBankService;
-    
-    @Autowired
-    private ExamStudentRepository examStudentRepository;
-    
-    @Autowired
-    private UserInfoRepository userInfoRepository;
-    
-    @Autowired
-    private ExamService examService;
-    
     @PersistenceContext
     private EntityManager entityManager;
+    
+    public ExamDataServiceImpl(
+            AuthenticationService authenticationService,
+            ExamRepository examRepository,
+            QuestionBankRepository questionBankRepository,
+            ExamQuestionRepository examQuestionRepository,
+            QuestionBankService questionBankService,
+            ExamStudentRepository examStudentRepository,
+            UserInfoRepository userInfoRepository,
+            ExamService examService) {
+        this.authenticationService = authenticationService;
+        this.examRepository = examRepository;
+        this.questionBankRepository = questionBankRepository;
+        this.examQuestionRepository = examQuestionRepository;
+        this.questionBankService = questionBankService;
+        this.examStudentRepository = examStudentRepository;
+        this.userInfoRepository = userInfoRepository;
+        this.examService = examService;
+    }
     
 
 
@@ -225,7 +229,6 @@ public class ExamDataServiceImpl implements ExamDataService {
 				userInfoRepository.findByCode(studentCode)
 				.orElseThrow(() -> new RuntimeException("Exam not found with code: " + examCode))
 				.getId());
-		
 	}
 
 	@Override

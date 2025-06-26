@@ -147,6 +147,7 @@ public interface ResultsRepository extends JpaRepository<Results, Integer> {
         		  JOIN exs.exam e
         		  WHERE e.examDate <= :end
         		  GROUP BY exs.student.id, e.id, e.examDate
+        		  ORDER BY e.examDate DESC
         		""")
         		List<StudentExamPercentageDTO> findStudentExamPercentagesOfPastExams(
         		    @Param("end") LocalDate end);

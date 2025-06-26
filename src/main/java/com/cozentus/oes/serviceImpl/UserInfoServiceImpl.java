@@ -29,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 
 
 @Service
-@RequiredArgsConstructor
 public class UserInfoServiceImpl implements UserInfoService {
 	private final Logger logger = LoggerFactory.getLogger(UserInfoServiceImpl.class);
 
@@ -37,7 +36,14 @@ public class UserInfoServiceImpl implements UserInfoService {
 	private final CredentialsRepository credentialsRepository;
 	private final EmailService emailService;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
-
+	
+	public UserInfoServiceImpl(UserInfoRepository userInfoRepository, CredentialsRepository credentialsRepository,
+			EmailService emailService, BCryptPasswordEncoder bCryptPasswordEncoder) {
+		this.userInfoRepository = userInfoRepository;
+		this.credentialsRepository = credentialsRepository;
+		this.emailService = emailService;
+		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+	}
 	@Override
 	@Cacheable(value = "userInfoAll", key = "'allusersInfo'")
 	public List<UserInfoDTO> getAll() {

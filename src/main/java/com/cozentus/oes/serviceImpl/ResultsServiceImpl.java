@@ -56,33 +56,30 @@ import com.cozentus.oes.services.ResultsService;
 
 public class ResultsServiceImpl implements ResultsService {
  
-    @Autowired 
-
-    private ExamRepository examRepo;
-
-    @Autowired 
-
-    private QuestionBankRepository questionRepo;
-
-    @Autowired 
-
-    private ExamStudentRepository examStudentRepo;
-
-    @Autowired 
-
-    private ExamSectionRepository examSectionRepo;
-
-    @Autowired 
-
-    private ResultsRepository resultsRepo;
-
-    @Autowired
-
-    private AuthenticationService authenticationService;
-
-    @Autowired
-
-    private UserInfoRepository userInfoRepository;
+	 private final ExamRepository examRepo;
+	    private final QuestionBankRepository questionRepo;
+	    private final ExamStudentRepository examStudentRepo;
+	    private final ExamSectionRepository examSectionRepo;
+	    private final ResultsRepository resultsRepo;
+	    private final AuthenticationService authenticationService;
+	    private final UserInfoRepository userInfoRepository;
+	    
+	    public ResultsServiceImpl(
+	            ExamRepository examRepo,
+	            QuestionBankRepository questionRepo,
+	            ExamStudentRepository examStudentRepo,
+	            ExamSectionRepository examSectionRepo,
+	            ResultsRepository resultsRepo,
+	            AuthenticationService authenticationService,
+	            UserInfoRepository userInfoRepository) {
+	        this.examRepo = examRepo;
+	        this.questionRepo = questionRepo;
+	        this.examStudentRepo = examStudentRepo;
+	        this.examSectionRepo = examSectionRepo;
+	        this.resultsRepo = resultsRepo;
+	        this.authenticationService = authenticationService;
+	        this.userInfoRepository = userInfoRepository;
+	    }
  
     @Override
 

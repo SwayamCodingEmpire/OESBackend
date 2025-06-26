@@ -17,11 +17,15 @@ import com.cozentus.oes.services.ExamSectionService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 public class ExamSectionServiceImpl implements ExamSectionService {
   
   private final ExamSectionRepository  sectionRepo;
   private final ExamQuestionRepository questionRepo;
+  
+  public ExamSectionServiceImpl(ExamSectionRepository sectionRepo, ExamQuestionRepository questionRepo) {
+	this.sectionRepo = sectionRepo;
+	this.questionRepo = questionRepo;
+  }
 
   @Override
   public List<SectionDetailDTO> getSectionsByExamCode(String examCode) {

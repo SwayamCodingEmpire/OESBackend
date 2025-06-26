@@ -29,17 +29,24 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class ExamServiceImpl implements ExamService {
-	@Autowired
-	private AuthenticationService authenticationService;
+	  private final AuthenticationService authenticationService;
+	    private final ExamRepository examRepository;
+	    private final TopicRepository topicRepository;
+	    private final ExamSectionRepository examSectionRepository;
+	    
+	    @PersistenceContext
+	    private EntityManager entityManager;
 
-    @Autowired
-    private ExamRepository examRepository;
-    @Autowired
-    private TopicRepository topicRepository;
-    @Autowired
-    private ExamSectionRepository examSectionRepository;
-    @PersistenceContext
-    private EntityManager entityManager;
+	    public ExamServiceImpl(
+	            AuthenticationService authenticationService,
+	            ExamRepository examRepository,
+	            TopicRepository topicRepository,
+	            ExamSectionRepository examSectionRepository) {
+	        this.authenticationService = authenticationService;
+	        this.examRepository = examRepository;
+	        this.topicRepository = topicRepository;
+	        this.examSectionRepository = examSectionRepository;
+	    }
 
     @Override
     public ExamDTO createExam(ExamDTO dto) {
